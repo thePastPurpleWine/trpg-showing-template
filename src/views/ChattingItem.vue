@@ -16,11 +16,11 @@
         </div>
       </div>
 
-      <div class="placeholder-block"/>
+<!--      <div class="placeholder-block"/>-->
     </a-row>
 
     <a-row v-else-if="type === TYPE_RIGHT" class="message-item-right" type="flex" justify="end">
-      <div class="placeholder-block"/>
+<!--      <div class="placeholder-block"/>-->
 
       <div class="message-block">
         <div v-if="!isContinuous" class="nickname-block">
@@ -123,7 +123,7 @@ export default {
 </script>
 
 <style scoped lang="less">
-@size: 40px;
+@head-size: 60px;
 
 .message-first {
   width: 100%;
@@ -143,8 +143,8 @@ export default {
 
   .head-block {
     img {
-      width: @size;
-      height: @size;
+      width: @head-size;
+      height: @head-size;
 
       border-radius: 8px;
     }
@@ -152,31 +152,32 @@ export default {
 
   .message-block {
     padding: 0 10px;
-    max-width: calc(100% - @size * 2);
+    max-width: calc(100% - @head-size * 1);
 
     .nickname-block {
-      height: 24px;
+      height: 32px;
       width: 100%;
 
       span {
-        font-size: 20px;
-        line-height: 24px;
+        font-size: 28px;
+        line-height: 32px;
       }
     }
 
     .message-bubble {
       margin-top: 3px;
       padding: 8px;
-      background-color: rgba(255, 255, 255, 1);
+      background-color: rgba(200, 200, 200, 0.7);
       border-radius: 0 10px 10px 10px;
       word-break: break-all;
 
-      font-size: 20px;
+      font-size: 30px;
+      font-family: '华康少女字体', serif;
     }
   }
 
   .placeholder-block {
-    width: @size;
+    width: @head-size;
     height: 100%;
   }
 }
@@ -186,8 +187,8 @@ export default {
 
   .head-block {
     img {
-      width: @size;
-      height: @size;
+      width: @head-size;
+      height: @head-size;
 
       border-radius: 8px;
     }
@@ -195,32 +196,33 @@ export default {
 
   .message-block {
     padding: 0 10px;
-    max-width: calc(100% - @size * 2);
+    max-width: calc(100% - @head-size * 1);
 
     .nickname-block {
-      height: 24px;
+      height: 32px;
       width: 100%;
 
       span {
         float: right;
-        font-size: 20px;
-        line-height: 24px;
+        font-size: 28px;
+        line-height: 32px;
       }
     }
 
     .message-bubble {
       margin-top: 3px;
       padding: 8px;
-      background-color: rgba(255, 255, 255, 1);
+      background-color: rgba(255, 255, 255, 0.7);
       border-radius: 10px 0 10px 10px;
       word-break: break-all;
 
-      font-size: 20px;
+      font-size: 30px;
+      font-family: '华康少女字体', serif;
     }
   }
 
   .placeholder-block {
-    width: @size;
+    width: @head-size;
     height: 100%;
   }
 }

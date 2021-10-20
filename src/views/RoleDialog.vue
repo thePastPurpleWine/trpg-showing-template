@@ -9,7 +9,8 @@ export default {
   name: 'RoleDialog',
   data () {
     return {
-      content: 'FSGCZNDRWVC4VWLUBM3W3QPYUY8Z8WGMIQPGV22EO4ULQTZK63F7AQ2V5GXOO2IA5RLPYRMCR85HOPBXQKTUBFMGY2CJK1',
+      content: '故事的起因，是宿舍中的谢拉被人杀害，\n' +
+        '死因、其他线索以及公园湖边的案发地点一概被警察封锁了，\n',
       currentContent: ''
     }
   },
@@ -36,7 +37,12 @@ export default {
 
 <style scoped>
 .main {
+  height: 320px;
+  background-color: rgba(0, 0, 0, 0.3);
   word-break: break-all;
-  font-size: 24px;
+  font-size: 40px;
+  font-weight: lighter;
+  color: #E9A92D;
+  font-family: '华康少女字体', serif;
 }
 </style>

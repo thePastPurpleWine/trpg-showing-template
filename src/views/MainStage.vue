@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main-stage">
     <role-image></role-image>
     <role-dialog/>
   </div>
@@ -17,6 +17,9 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="less">
+.main-stage {
+  width: 100%;
+  height: 100%;
+}
 </style>

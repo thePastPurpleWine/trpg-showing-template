@@ -39,12 +39,12 @@ export default {
     }
   },
   mounted () {
-    this.itemList.push(this.randomData())
-    this.itemList.push(this.randomData())
-    this.itemList.push(this.randomData())
-    // setInterval(() => {
-    //   this.itemList.push(this.randomData())
-    // }, 1000)
+    const timer = setInterval(() => {
+      this.itemList.push(this.randomData())
+    }, 1000)
+    setTimeout(() => {
+      clearInterval(timer)
+    }, 12000)
   },
   methods: {
     scrollWindow (index) {
@@ -64,7 +64,7 @@ export default {
       }
 
       item.content = this.randomContent(Math.ceil(Math.random() * 128))
-      item.type = this.itemTypeList[Math.ceil(Math.random() * 2)]
+      item.type = 'left'
       item.isContinuous = Math.ceil(Math.random() * 10) % 2 === 0
 
       return item
@@ -93,7 +93,7 @@ export default {
   max-height: 100%;
 
   padding: 0 20px;
-  background: rgba(0, 0, 0, 0.1);
+  //background: rgba(0, 0, 0, 0.1);
 
   overflow: hidden;
 }

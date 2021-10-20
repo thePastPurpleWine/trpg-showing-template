@@ -1,6 +1,6 @@
 <template>
   <div id="role" class="main">
-    <div class="role"></div>
+    <img src="../assets/小梺/普通.png">
   </div>
 </template>
 
@@ -19,8 +19,8 @@ export default {
   },
   mounted () {
     this.element = document.getElementById('role')
-    setTimeout(() => this.fadeIn(40, 0.2), 3000)
-    setTimeout(() => this.fadeOut(40, 0.2), 6000)
+    setTimeout(() => this.fadeIn(40, 0.2), 0)
+    // setTimeout(() => this.fadeOut(40, 0.2), 10000)
   },
   methods: {
     fadeIn (distance, second) {
@@ -91,8 +91,6 @@ export default {
 }
 
 .role {
-  width: 150px;
-  height: 400px;
-  background-color: grey;
+  //background-image: url("../../src/assets/小梺/普通.png");
 }
 </style>

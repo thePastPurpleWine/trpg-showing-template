@@ -1,14 +1,16 @@
 <template>
   <div class="main">
-    <div class="left-part">
-      <chatting-window/>
-    </div>
-    <div class="center-part">
-      <main-stage/>
-    </div>
-    <div class="right-part">
-      <roleplay-log-window/>
-    </div>
+<!--    <div class="stage-background">-->
+      <div class="left-part">
+        <chatting-window/>
+      </div>
+      <div class="center-part">
+        <main-stage/>
+      </div>
+      <div class="right-part">
+        <roleplay-log-window/>
+      </div>
+<!--    </div>-->
   </div>
 </template>
 <script>
@@ -38,26 +40,32 @@ export default {
 .main {
   width: 1920px;
   height: 1080px;
-  background-color: #e8e8e8;
+  background-image: url("../assets/宿舍3.png");
   display: flex;
 
-  padding: @padding-size;
+  padding: @padding-size 0;
 }
 
+//.stage-background {
+//  width: 100%;
+//  height: 100%;
+//  display: flex;
+//}
+
 .left-part {
-  width: 30%;
+  width: 32%;
   height: 100%;
 }
 
 .center-part {
-  width: 40%;
+  width: 50%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.2);
+  //background: rgba(0, 0, 0, 0.2);
 }
 
 .right-part {
-  width: 30%;
+  width: 10%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.3);
+  //background: rgba(0, 0, 0, 0.3);
 }
 </style>
