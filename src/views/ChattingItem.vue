@@ -166,7 +166,7 @@ export default {
     max-width: calc(100% - @head-size * 1);
 
     .nickname-block {
-      -webkit-text-stroke: 0.025em darkgray;
+      -webkit-text-stroke: 0.025em black;
       color: lightgrey;
       height: 32px;
       width: 100%;
@@ -217,7 +217,7 @@ export default {
     max-width: calc(100% - @head-size * 1);
 
     .nickname-block {
-      -webkit-text-stroke: 0.025em darkgray;
+      -webkit-text-stroke: 0.025em black;
       color: lightgrey;
       height: 32px;
       width: 100%;
