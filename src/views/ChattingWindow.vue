@@ -9,6 +9,7 @@
                    :content="item.content"
                    :type="item.type"
                    :is-continuous="item.isContinuous"
+                   :picture="item.picture"
                    @mounted="scrollWindow(index)"
     />
   </div>
@@ -16,7 +17,10 @@
 
 <script>
 import ChattingItem from '@/views/ChattingItem'
-const chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+import ChapterStart from '../assets/chattingData/ChapterStart.json'
+
+const chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '\n']
+
 export default {
   name: 'ChattingWindow',
   components: {
@@ -35,18 +39,28 @@ export default {
         isContinuous: undefined
       },
       itemList: [],
-      itemTypeList: ['info', 'left', 'right']
+      itemTypeList: ['info', 'left', 'right'],
+      itemCount: 0,
+      itemDelay: 0,
+
+      ChapterStart
     }
   },
   mounted () {
-    const timer = setInterval(() => {
-      this.itemList.push(this.randomData())
-    }, 1000)
-    setTimeout(() => {
-      clearInterval(timer)
-    }, 12000)
+    this.getChatItem()
   },
   methods: {
+    getChatItem () {
+      if (this.itemCount < this.ChapterStart.length) {
+        const item = this.ChapterStart[this.itemCount]
+        setTimeout(() => {
+          this.itemList.push(item)
+          this.itemCount++
+          this.getChatItem()
+        }, this.itemDelay)
+        this.itemDelay = Math.max(300 + item.content.length * 100, 1500)
+      }
+    },
     scrollWindow (index) {
       const theLastItem = document.getElementById('chatting-item-' + index)
       theLastItem.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })

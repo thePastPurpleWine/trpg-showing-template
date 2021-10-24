@@ -33,7 +33,7 @@ export default {
 .main {
   width: 1920px;
   height: 1080px;
-  background-image: url("../assets/宿舍3.png");
+  background-image: url("../assets/间奏背景.png");
   display: flex;
 
   padding: @padding-size 0;
@@ -46,9 +46,9 @@ export default {
 //}
 
 .left-part {
-  margin-left: 600px;
+  margin-left: 400px;
   width: 32%;
-  height: 100%;
+  height: 95%;
 }
 
 .center-part {

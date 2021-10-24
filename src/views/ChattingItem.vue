@@ -7,13 +7,14 @@
       </div>
 
       <div class="message-block">
-        <div v-if="!isContinuous" class="nickname-block">
+        <a-row v-if="!isContinuous" class="nickname-block">
           <span>{{ nickname }}</span>
-        </div>
+        </a-row>
 
-        <div class="message-bubble" v-if="content">
-          <span>{{ content }}</span>
-        </div>
+        <a-row class="message-bubble" v-if="content || pictureSrc">
+          <img v-if="pictureSrc" :src="pictureSrc" @load="pictureReady = true">
+          <span v-if="pictureReady">{{ content }}</span>
+        </a-row>
       </div>
 
 <!--      <div class="placeholder-block"/>-->
@@ -41,6 +42,8 @@
 </template>
 
 <script>
+import chatImagesDict from '@/assets/images/chatImagesDict.js'
+
 const TYPE_LEFT = 'left'
 const TYPE_RIGHT = 'right'
 const TYPE_INFO = 'info'
@@ -61,7 +64,7 @@ export default {
     content: {
       type: String,
       required: false,
-      default: ''
+      default: ' '
     },
     emoji: {
       type: String,
@@ -92,27 +95,35 @@ export default {
       TYPE_RIGHT,
       TYPE_INFO,
 
-      headImg: undefined
+      headImg: undefined,
+      mountedReady: false,
+      pictureReady: false,
+      emitFlag: false,
+      pictureSrc: undefined
     }
   },
   created () {
     if (!this.isContinuous) {
-      try {
-        const jpgUrl = require(`@/assets/head-${this.head}.jpg`)
-        if (jpgUrl) {
-          this.headImg = jpgUrl
-        }
-      } catch (e) {}
-      try {
-        const pngUrl = require(`@/assets/head-${this.head}.png`)
-        if (pngUrl) {
-          this.headImg = pngUrl
-        }
-      } catch (e) {}
+      this.headImg = require(`@/assets/headImages/${this.head}`)
+    }
+    if (this.picture) {
+      this.pictureSrc = chatImagesDict.get(this.picture)
+    } else {
+      this.pictureReady = true
     }
   },
   mounted () {
-    this.$emit('mounted')
+    this.mountedReady = true
+    if (this.mountedReady && this.pictureReady && !this.emitFlag) {
+      this.emitFlag = true
+      this.$emit('mounted')
+    }
+  },
+  updated () {
+    if (this.mountedReady && this.pictureReady && !this.emitFlag) {
+      this.emitFlag = true
+      this.$emit('mounted')
+    }
   },
   methods: {
     getMessageClass () {
@@ -155,6 +166,7 @@ export default {
     max-width: calc(100% - @head-size * 1);
 
     .nickname-block {
+      -webkit-text-stroke: 0.025em darkgray;
       color: lightgrey;
       height: 32px;
       width: 100%;
@@ -166,14 +178,19 @@ export default {
     }
 
     .message-bubble {
+      width: fit-content;
       margin-top: 3px;
       padding: 8px;
       background-color: rgba(255, 255, 255, 0.7);
       border-radius: 0 10px 10px 10px;
-      word-break: break-all;
+      word-break: break-word;
 
       font-size: 30px;
       font-family: '华康少女字体', serif;
+
+      img {
+        vertical-align: bottom;
+      }
     }
   }
 
@@ -200,6 +217,7 @@ export default {
     max-width: calc(100% - @head-size * 1);
 
     .nickname-block {
+      -webkit-text-stroke: 0.025em darkgray;
       color: lightgrey;
       height: 32px;
       width: 100%;
@@ -212,14 +230,19 @@ export default {
     }
 
     .message-bubble {
+      width: fit-content;
       margin-top: 3px;
       padding: 8px;
       background-color: rgba(255, 255, 255, 0.7);
       border-radius: 10px 0 10px 10px;
-      word-break: break-all;
+      word-break: break-word;
 
       font-size: 30px;
       font-family: '华康少女字体', serif;
+
+      img {
+        vertical-align: bottom;
+      }
     }
   }
 
