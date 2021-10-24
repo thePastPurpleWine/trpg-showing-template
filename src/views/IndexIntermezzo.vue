@@ -4,9 +4,6 @@
       <div class="left-part">
         <chatting-window/>
       </div>
-      <div class="center-part">
-        <main-stage/>
-      </div>
 <!--      <div class="right-part">-->
 <!--        <roleplay-log-window/>-->
 <!--      </div>-->
@@ -14,13 +11,11 @@
 </template>
 <script>
 import ChattingWindow from '@/views/ChattingWindow'
-import MainStage from '@/views/MainStage'
 
 export default {
   name: 'IndexIntermezzo',
   components: {
-    ChattingWindow,
-    MainStage
+    ChattingWindow
   },
   data () {
     return {
@@ -51,6 +46,7 @@ export default {
 //}
 
 .left-part {
+  margin-left: 600px;
   width: 32%;
   height: 100%;
 }

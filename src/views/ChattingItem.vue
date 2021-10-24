@@ -76,7 +76,7 @@ export default {
     type: {
       type: String,
       required: true,
-      validate: (val) => {
+      validator: (val) => {
         return val === TYPE_INFO || val === TYPE_RIGHT || val === TYPE_LEFT
       }
     },
@@ -155,6 +155,7 @@ export default {
     max-width: calc(100% - @head-size * 1);
 
     .nickname-block {
+      color: lightgrey;
       height: 32px;
       width: 100%;
 
@@ -167,7 +168,7 @@ export default {
     .message-bubble {
       margin-top: 3px;
       padding: 8px;
-      background-color: rgba(200, 200, 200, 0.7);
+      background-color: rgba(255, 255, 255, 0.7);
       border-radius: 0 10px 10px 10px;
       word-break: break-all;
 
@@ -199,6 +200,7 @@ export default {
     max-width: calc(100% - @head-size * 1);
 
     .nickname-block {
+      color: lightgrey;
       height: 32px;
       width: 100%;
 

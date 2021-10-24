@@ -19,7 +19,7 @@ export default {
   },
   mounted () {
     this.element = document.getElementById('role')
-    setTimeout(() => this.fadeIn(40, 0.2), 0)
+    // setTimeout(() => this.fadeIn(40, 0.2), 0)
     // setTimeout(() => this.fadeOut(40, 0.2), 10000)
   },
   methods: {
@@ -87,7 +87,10 @@ export default {
 
 <style scoped lang="less">
 .main {
-  opacity: 0;
+  z-index: 0;
+  margin-bottom: -50px;
+  opacity: 1;
+  //padding-left: 40px;
 }
 
 .role {
