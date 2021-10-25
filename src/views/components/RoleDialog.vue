@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="main-dialog">
     <img v-if="image" style="z-index: 1;" :src="image">
     <div class="name-block">
       <span v-show="!isSystem">{{ name }}</span>
@@ -32,6 +32,7 @@ export default {
   },
   data () {
     return {
+      image: undefined,
       currentContent: ''
     }
   },
@@ -60,12 +61,9 @@ export default {
     },
     typeContent () {
       this.currentContent = ''
-      let count = 1
-      const length = this.content.length
-
       const timer = setInterval(() => {
-        if (count <= length) {
-          this.currentContent = this.content.slice(0, count++)
+        if (this.currentContent.length < this.content.length) {
+          this.currentContent = this.content.slice(0, this.currentContent.length + 1)
         } else {
           clearInterval(timer)
         }
@@ -85,7 +83,7 @@ export default {
 </script>
 
 <style scoped>
-.main {
+.main-dialog {
   height: 360px;
   word-break: break-all;
   font-weight: lighter;

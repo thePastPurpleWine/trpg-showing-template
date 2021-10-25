@@ -14,31 +14,50 @@
                      @mounted="chattingItemMounted(index)"
       />
     </div>
-    <div v-if="false" class="main-stage">
-      <main-stage/>
+    <div class="main-stage">
+      <display style="width: 1200px; height: 40%; position: absolute;"/>
+      <role-image style="margin-top: 240px"/>
+      <role-dialog :is-system="dialogData.isSystem"
+                   :name="dialogData.name"
+                   :content="dialogData.content"
+      />
     </div>
   </div>
 </template>
 <script>
-import ChattingItem from '@/views/ChattingItem'
-import MainStage from '@/views/MainStage'
-import ChapterStart from '../assets/chattingData/ChapterStart.json'
+import ChattingItem from '@/views/components/ChattingItem'
+import ChapterStart from '@/assets/chattingData/ChapterStart.json'
+import RoleImage from '@/views/components/RoleImage'
+import RoleDialog from '@/views/components/RoleDialog'
+import Display from '@/views/components/Display'
 
 export default {
   name: 'Index',
   components: {
     ChattingItem,
-    MainStage
+    RoleImage,
+    RoleDialog,
+    Display
   },
   data () {
     return {
       // Chatting Part
-      chattingItemList: []
+      chattingItemList: [],
+      dialogData: {
+        isSystem: false,
+        name: '谢拉',
+        content: '故事的起因，是宿舍中的谢拉被人杀害，死因、其他线索以及公园湖边的案发地点一概被警察封锁了',
+        voice: '',
+        delay: 500
+      }
     }
   },
   mounted () {
     setTimeout(() => {
       this.chattingItemList.push(ChapterStart[0])
+    }, 3000)
+    setTimeout(() => {
+      this.dialogData.content = '故事的起因，是宿舍中的谢拉被人杀害，死因、其他线索以及公园湖边的案发地点一概被警察封锁'
     }, 3000)
   },
   methods: {
@@ -93,11 +112,6 @@ export default {
 
 .main-stage {
   width: 1200px;
-  height: 100%;
-}
-
-.right-part {
-  width: 10%;
   height: 100%;
 }
 </style>

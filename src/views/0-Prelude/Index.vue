@@ -17,11 +17,11 @@
   </div>
 </template>
 <script>
-import ChattingItem from '@/views/ChattingItem'
-import ChapterStart from '../assets/chattingData/ChapterStart.json'
+import ChattingItem from '@/views/components/ChattingItem'
+import ChapterStart from '../../assets/chattingData/ChapterStart.json'
 
 export default {
-  name: 'IndexIntermezzo',
+  name: 'Index',
   components: {
     ChattingItem
   },
@@ -64,7 +64,7 @@ export default {
 .main {
   width: 1920px;
   height: 1080px;
-  background-image: url("../assets/间奏背景.png");
+  background-image: url("../../assets/间奏背景.png");
   display: flex;
 
   padding: @padding-size 0;

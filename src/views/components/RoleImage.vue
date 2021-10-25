@@ -1,6 +1,6 @@
 <template>
-  <div id="role" class="main">
-    <img src="../assets/小梺/普通.png">
+  <div id="role" class="main-role">
+    <img src="../../assets/小梺/普通.png">
   </div>
 </template>
 
@@ -86,14 +86,10 @@ export default {
 </script>
 
 <style scoped lang="less">
-.main {
+.main-role {
   z-index: 0;
   margin-bottom: -50px;
   opacity: 1;
   //padding-left: 40px;
-}
-
-.role {
-  //background-image: url("../../src/assets/小梺/普通.png");
 }
 </style>
