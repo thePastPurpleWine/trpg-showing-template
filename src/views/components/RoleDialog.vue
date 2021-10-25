@@ -16,6 +16,9 @@ const MAX_CONTENT = 92
 export default {
   name: 'RoleDialog',
   props: {
+    id: {
+      type: Boolean
+    },
     isSystem: {
       type: Boolean
     },
@@ -33,7 +36,10 @@ export default {
   data () {
     return {
       image: undefined,
-      currentContent: ''
+      currentContent: '',
+      audio: undefined,
+      typingEnd: false,
+      audioEnd: false
     }
   },
   watch: {
@@ -43,12 +49,27 @@ export default {
     },
     content () {
       this.typeContent()
+      this.playAudio()
+
+      this.typingEnd = false
+      this.audioEnd = false
+    },
+    typingEnd () {
+      if (this.typingEnd && this.audioEnd) {
+        this.$emit('playEnd')
+      }
+    },
+    audioEnd () {
+      if (this.typingEnd && this.audioEnd) {
+        this.$emit('playEnd')
+      }
     }
   },
   mounted () {
     this.imageImport()
     this.typeContent()
     this.contentBlockFix()
+    this.playAudio()
   },
   computed: {
     contentBlockClass () {
@@ -56,6 +77,10 @@ export default {
     }
   },
   methods: {
+    getAudioById () {
+      // TODO getAudioById
+      return ''
+    },
     imageImport () {
       this.image = require('@/assets/' + (this.isSystem ? '对话框-系统.png' : '对话框.png'))
     },
@@ -65,9 +90,25 @@ export default {
         if (this.currentContent.length < this.content.length) {
           this.currentContent = this.content.slice(0, this.currentContent.length + 1)
         } else {
+          this.typingEnd = true
           clearInterval(timer)
         }
       }, 20)
+    },
+    playAudio () {
+      const audioSrc = this.getAudioById()
+      if (!audioSrc) {
+        this.audioEnd = true
+      } else {
+        this.audio = new Audio(audioSrc)
+        this.audio.addListener('ended', (ended) => {
+          if (ended) {
+            this.audioEnd = true
+          }
+        })
+        this.audio.load()
+        this.audio.play()
+      }
     },
     contentBlockFix () {
       const e = document.getElementById('contentBlock')

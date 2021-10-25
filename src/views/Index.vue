@@ -17,9 +17,11 @@
     <div class="main-stage">
       <display style="width: 1200px; height: 40%; position: absolute;"/>
       <role-image style="margin-top: 240px"/>
-      <role-dialog :is-system="dialogData.isSystem"
+      <role-dialog :id="dialogData.id"
+                   :is-system="dialogData.isSystem"
                    :name="dialogData.name"
                    :content="dialogData.content"
+                   @playEnd="dialogPlayEnd"
       />
     </div>
   </div>
@@ -44,6 +46,7 @@ export default {
       // Chatting Part
       chattingItemList: [],
       dialogData: {
+        id: '',
         isSystem: false,
         name: '谢拉',
         content: '故事的起因，是宿舍中的谢拉被人杀害，死因、其他线索以及公园湖边的案发地点一概被警察封锁了',
@@ -61,9 +64,9 @@ export default {
     }, 3000)
   },
   methods: {
-    /***
+    /**
      * Chatting Part
-     ***/
+     **/
     chattingItemMounted (index) {
       this.scrollChattingWindow(index)
       this.delayPushChattingItem(index)
@@ -78,6 +81,12 @@ export default {
           this.chattingItemList.push(ChapterStart[index + 1])
         }, ChapterStart[index].delay)
       }
+    },
+    /**
+     * Dialog Part
+     **/
+    dialogPlayEnd () {
+      // TODO 加载下一条信息
     }
   }
 }
