@@ -6,7 +6,8 @@
     "picture": "cat-1",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "13.jpg",
@@ -15,7 +16,8 @@
     "picture": "snqx",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 2900
   },
   {
     "head": "13.jpg",
@@ -24,7 +26,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1850
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -33,25 +36,28 @@
     "picture": "cat-2",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "风萧萧兮易水寒.jpg",
-    "nickname": "风萧萧兮易水寒（小梺）",
+    "nickname": "风萧萧兮易水寒",
     "content": "在群里文字口嗨吗",
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "风萧萧兮易水寒.jpg",
-    "nickname": "风萧萧兮易水寒（小梺）",
+    "nickname": "风萧萧兮易水寒",
     "content": "我想扮演小梺！ ",
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "丰聪西瓜子.jpg",
@@ -60,7 +66,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 3050
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -69,7 +76,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -78,7 +86,8 @@
     "picture": "cat-2",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -87,7 +96,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 4100
   },
   {
     "head": "林天吟.jpg",
@@ -96,7 +106,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 2000
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -105,7 +116,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "林天吟.jpg",
@@ -114,7 +126,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1850
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -123,7 +136,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1850
   },
   {
     "head": "林天吟.jpg",
@@ -132,7 +146,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 4100
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -141,7 +156,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -150,7 +166,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 2750
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -159,16 +176,18 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "风萧萧兮易水寒.jpg",
-    "nickname": "风萧萧兮易水寒（小梺）",
+    "nickname": "风萧萧兮易水寒",
     "content": "我要演小梺！",
     "picture": "xx-6",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -177,16 +196,18 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "风萧萧兮易水寒.jpg",
-    "nickname": "风萧萧兮易水寒（小梺）",
+    "nickname": "风萧萧兮易水寒",
     "content": "你有意见吗",
     "picture": "xx-2",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -195,7 +216,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -204,7 +226,8 @@
     "picture": "cat-1",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1850
   },
   {
     "head": "13.jpg",
@@ -213,7 +236,8 @@
     "picture": "image006",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 2600
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -222,7 +246,8 @@
     "picture": "cat-1",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -231,7 +256,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "朝仓心叶.jpg",
@@ -240,7 +266,8 @@
     "picture": "公平",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "AFELD.jpg",
@@ -249,7 +276,8 @@
     "picture": "公平",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -258,7 +286,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 2150
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -267,7 +296,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1850
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -276,7 +306,8 @@
     "picture": "cat-2",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -285,7 +316,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "13.jpg",
@@ -294,7 +326,8 @@
     "picture": "snqx",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 2750
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -303,7 +336,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 2000
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -312,16 +346,18 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "风萧萧兮易水寒.jpg",
-    "nickname": "风萧萧兮易水寒（小梺）",
+    "nickname": "风萧萧兮易水寒",
     "content": "你手机",
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -330,7 +366,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -339,7 +376,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -348,7 +386,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -357,16 +396,18 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 3800
   },
   {
     "head": "风萧萧兮易水寒.jpg",
-    "nickname": "风萧萧兮易水寒（小梺）",
+    "nickname": "风萧萧兮易水寒",
     "content": "我不会",
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -375,16 +416,18 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "风萧萧兮易水寒.jpg",
-    "nickname": "风萧萧兮易水寒（小梺）",
+    "nickname": "风萧萧兮易水寒",
     "content": "所以。。。什么时候开始呢",
     "picture": "xx-1",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 2300
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -393,7 +436,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -402,7 +446,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 5450
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -411,7 +456,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "统御百合香.jpg",
@@ -420,7 +466,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 2300
   },
   {
     "head": "starofwolf.jpg",
@@ -429,7 +476,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "统御百合香.jpg",
@@ -438,25 +486,28 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "风萧萧兮易水寒.jpg",
-    "nickname": "风萧萧兮易水寒（小梺）",
+    "nickname": "风萧萧兮易水寒",
     "content": "我选牛妹！ ",
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "风萧萧兮易水寒.jpg",
-    "nickname": "风萧萧兮易水寒（小梺）",
+    "nickname": "风萧萧兮易水寒",
     "content": "尽管来吧！",
     "picture": "xx-8",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -465,7 +516,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "梦回洛丹伦.jpg",
@@ -474,7 +526,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1850
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -483,7 +536,8 @@
     "picture": "cat-2",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1850
   },
   {
     "head": "starofwolf.jpg",
@@ -492,7 +546,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "starofwolf.jpg",
@@ -501,16 +556,18 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1850
   },
   {
     "head": "风萧萧兮易水寒.jpg",
-    "nickname": "风萧萧兮易水寒（小梺）",
+    "nickname": "风萧萧兮易水寒",
     "content": "骰子在哪",
     "picture": "image010",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "13.jpg",
@@ -519,7 +576,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 2450
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -528,7 +586,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -537,7 +596,8 @@
     "picture": "骰子",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "统御百合香.jpg",
@@ -546,7 +606,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "统御百合香.jpg",
@@ -555,7 +616,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -564,7 +626,8 @@
     "picture": "image012",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "13.jpg",
@@ -573,7 +636,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 2750
   },
   {
     "head": "梦回洛丹伦.jpg",
@@ -582,16 +646,18 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
     "nickname": "谢拉·卡姗娜",
-    "content": "劳资包办，不用这些劳资驾驭不了的工具",
+    "content": "劳资包办，不用其他劳资驾驭不了的工具",
     "picture": "cat-1",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 3200
   },
   {
     "head": "嘟嘟.jpg",
@@ -600,7 +666,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "13.jpg",
@@ -609,7 +676,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -618,7 +686,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1850
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -627,7 +696,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -636,7 +706,8 @@
     "picture": "cat-2",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 3500
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -645,7 +716,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "统御百合香.jpg",
@@ -654,7 +726,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1850
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -663,7 +736,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "starofwolf.jpg",
@@ -672,7 +746,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "starofwolf.jpg",
@@ -681,7 +756,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "starofwolf.jpg",
@@ -690,7 +766,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -699,7 +776,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "starofwolf.jpg",
@@ -708,7 +786,8 @@
     "picture": "tz-4",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 2300
   },
   {
     "head": "统御百合香.jpg",
@@ -717,7 +796,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "梦回洛丹伦.jpg",
@@ -726,7 +806,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "统御百合香.jpg",
@@ -735,7 +816,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "南浦 数绘.jpg",
@@ -744,7 +826,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -753,7 +836,8 @@
     "picture": "cat-2",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 3050
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -762,7 +846,8 @@
     "picture": "cat-2",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -771,7 +856,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -780,7 +866,8 @@
     "picture": "cat-1",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -789,7 +876,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 3950
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -798,7 +886,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -807,7 +896,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "酱紫龙仔.jpg",
@@ -816,7 +906,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "13.jpg",
@@ -825,7 +916,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -834,7 +926,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -843,7 +936,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "大姐.jpg",
@@ -852,7 +946,8 @@
     "picture": "quin-1",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "starofwolf.jpg",
@@ -861,7 +956,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "统御百合香.jpg",
@@ -870,7 +966,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "starofwolf.jpg",
@@ -879,16 +976,18 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "风萧萧兮易水寒.jpg",
-    "nickname": "风萧萧兮易水寒（小梺）",
+    "nickname": "风萧萧兮易水寒",
     "content": "我要扮演小梺！",
     "picture": "xx-6",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -897,7 +996,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -906,7 +1006,8 @@
     "picture": "cat-2",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -915,7 +1016,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -924,7 +1026,18 @@
     "picture": "cat-3",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
+  },
+  {
+    "head": "小梺.jpg",
+    "nickname": "风萧萧兮易水寒（小梺）",
+    "content": "",
+    "picture": "xx-6",
+    "type": "left",
+    "isImportant": false,
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -933,7 +1046,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "starofwolf.jpg",
@@ -942,7 +1056,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -951,7 +1066,8 @@
     "picture": "cat-1",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "大姐.jpg",
@@ -960,7 +1076,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1850
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -969,7 +1086,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "大姐.jpg",
@@ -978,7 +1096,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 2900
   },
   {
     "head": "13.jpg",
@@ -987,7 +1106,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -996,7 +1116,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "南浦 数绘.jpg",
@@ -1005,7 +1126,8 @@
     "picture": "image017",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "starofwolf.jpg",
@@ -1014,7 +1136,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 2300
   },
   {
     "head": "统御百合香.jpg",
@@ -1023,7 +1146,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 2750
   },
   {
     "head": "统御百合香.jpg",
@@ -1032,7 +1156,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "嘟嘟.jpg",
@@ -1041,7 +1166,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "starofwolf.jpg",
@@ -1050,7 +1176,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "starofwolf.jpg",
@@ -1059,7 +1186,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "13.jpg",
@@ -1068,7 +1196,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -1077,7 +1206,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -1086,7 +1216,8 @@
     "picture": "cat-2",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "嘟嘟.jpg",
@@ -1095,7 +1226,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -1104,7 +1236,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -1113,7 +1246,8 @@
     "picture": "cat-4",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "统御百合香.jpg",
@@ -1122,7 +1256,8 @@
     "picture": "cat-4",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "梦回洛丹伦.jpg",
@@ -1131,7 +1266,8 @@
     "picture": "cat-4",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "统御百合香.jpg",
@@ -1140,7 +1276,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "starofwolf.jpg",
@@ -1149,7 +1286,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "卡尔·雷克斯.jpg",
@@ -1158,7 +1296,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "桃子.jpg",
@@ -1167,7 +1306,8 @@
     "picture": "cat-4",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "统御百合香.jpg",
@@ -1176,7 +1316,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -1185,7 +1326,8 @@
     "picture": "cat-2",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "卡尔·雷克斯.jpg",
@@ -1194,7 +1336,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "卡尔·雷克斯.jpg",
@@ -1203,7 +1346,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "卡尔·雷克斯.jpg",
@@ -1212,7 +1356,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "卡尔·雷克斯.jpg",
@@ -1221,7 +1366,8 @@
     "picture": "image021",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "starofwolf.jpg",
@@ -1230,7 +1376,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1850
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -1239,7 +1386,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "starofwolf.jpg",
@@ -1248,7 +1396,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "卡尔·雷克斯.jpg",
@@ -1257,7 +1406,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "大姐.jpg",
@@ -1266,7 +1416,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -1275,7 +1426,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "starofwolf.jpg",
@@ -1284,7 +1436,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 2000
   },
   {
     "head": "卡尔·雷克斯.jpg",
@@ -1293,7 +1446,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -1302,7 +1456,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -1311,7 +1466,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "统御百合香.jpg",
@@ -1320,7 +1476,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 2150
   },
   {
     "head": "统御百合香.jpg",
@@ -1329,7 +1486,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1850
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -1338,7 +1496,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "starofwolf.jpg",
@@ -1347,7 +1506,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -1356,7 +1516,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -1365,7 +1526,8 @@
     "picture": "cat-4",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -1374,7 +1536,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -1383,7 +1546,8 @@
     "picture": "cat-2",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "林天吟.jpg",
@@ -1392,7 +1556,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "卡尔·雷克斯.jpg",
@@ -1401,7 +1566,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -1410,7 +1576,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -1419,7 +1586,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "大姐.jpg",
@@ -1428,7 +1596,8 @@
     "picture": "dj-8",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1850
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -1437,7 +1606,8 @@
     "picture": "image024",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -1446,7 +1616,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -1455,7 +1626,8 @@
     "picture": "cat-2",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "林天吟.jpg",
@@ -1464,7 +1636,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "卡尔·雷克斯.jpg",
@@ -1473,7 +1646,8 @@
     "picture": "image025",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -1482,7 +1656,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -1491,7 +1666,8 @@
     "picture": "image027",
     "type": "left",
     "isImportant": false,
-    "isContinuous": true
+    "isContinuous": true,
+    "delay": 1800
   },
   {
     "head": "林天吟.jpg",
@@ -1500,7 +1676,8 @@
     "picture": "image028",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "花怡.jpg",
@@ -1509,7 +1686,8 @@
     "picture": "image029",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 1800
   },
   {
     "head": "谢拉·卡姗娜.jpg",
@@ -1518,7 +1696,8 @@
     "picture": "cat-5",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 4400
   },
   {
     "head": "花怡.jpg",
@@ -1527,7 +1706,8 @@
     "picture": "",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 2900
   },
   {
     "head": "小梺.jpg",
@@ -1536,7 +1716,8 @@
     "picture": "xx-5",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 3500
   },
   {
     "head": "大姐.jpg",
@@ -1545,6 +1726,7 @@
     "picture": "dj-8",
     "type": "left",
     "isImportant": false,
-    "isContinuous": false
+    "isContinuous": false,
+    "delay": 2750
   }
 ]

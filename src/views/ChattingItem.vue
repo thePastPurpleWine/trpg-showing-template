@@ -1,8 +1,8 @@
 <template>
   <div :class="this.isContinuous ? 'message-continuous' : 'message-first'">
-    <a-row v-if="type === TYPE_LEFT" class="message-item-left" type="flex">
+    <a-row v-if="type === TYPE_LEFT" class="message-item-left" type="flex" v-show="allReady">
       <div class="head-block">
-        <img v-if="!isContinuous" :src="headImg" alt="">
+        <img v-if="!isContinuous" :src="headImg" alt="" @load="headImgReady = true">
         <div v-else class="placeholder-block"/>
       </div>
 
@@ -11,7 +11,7 @@
           <span>{{ nickname }}</span>
         </a-row>
 
-        <a-row class="message-bubble" v-if="content || pictureSrc">
+        <a-row class="message-bubble">
           <img v-if="pictureSrc" :src="pictureSrc" @load="pictureReady = true">
           <span v-if="pictureReady">{{ content }}</span>
         </a-row>
@@ -20,24 +20,24 @@
 <!--      <div class="placeholder-block"/>-->
     </a-row>
 
-    <a-row v-else-if="type === TYPE_RIGHT" class="message-item-right" type="flex" justify="end">
-<!--      <div class="placeholder-block"/>-->
+<!--    <a-row v-else-if="type === TYPE_RIGHT" class="message-item-right" type="flex" justify="end">-->
+<!--&lt;!&ndash;      <div class="placeholder-block"/>&ndash;&gt;-->
 
-      <div class="message-block">
-        <div v-if="!isContinuous" class="nickname-block">
-          <span>{{ nickname }}</span>
-        </div>
+<!--      <div class="message-block">-->
+<!--        <div v-if="!isContinuous" class="nickname-block">-->
+<!--          <span>{{ nickname }}</span>-->
+<!--        </div>-->
 
-        <div class="message-bubble" v-if="content">
-          <span>{{ content }}</span>
-        </div>
-      </div>
+<!--        <div class="message-bubble" v-if="content">-->
+<!--          <span>{{ content }}</span>-->
+<!--        </div>-->
+<!--      </div>-->
 
-      <div class="head-block">
-        <img v-if="!isContinuous" :src="headImg" alt="">
-        <div v-else class="placeholder-block"/>
-      </div>
-    </a-row>
+<!--      <div class="head-block">-->
+<!--        <img v-if="!isContinuous" :src="headImg" alt="">-->
+<!--        <div v-else class="placeholder-block"/>-->
+<!--      </div>-->
+<!--    </a-row>-->
   </div>
 </template>
 
@@ -98,37 +98,39 @@ export default {
       headImg: undefined,
       mountedReady: false,
       pictureReady: false,
-      emitFlag: false,
+      headImgReady: false,
       pictureSrc: undefined
     }
   },
   created () {
     if (!this.isContinuous) {
       this.headImg = require(`@/assets/headImages/${this.head}`)
+    } else {
+      this.headImgReady = true
     }
+
     if (this.picture) {
       this.pictureSrc = chatImagesDict.get(this.picture)
     } else {
       this.pictureReady = true
     }
   },
+  computed: {
+    allReady () {
+      return this.mountedReady && this.pictureReady && this.headImgReady
+    }
+  },
+  watch: {
+    allReady (val) {
+      if (val) {
+        setTimeout(() => {
+          this.$emit('mounted')
+        }, 100)
+      }
+    }
+  },
   mounted () {
     this.mountedReady = true
-    if (this.mountedReady && this.pictureReady && !this.emitFlag) {
-      this.emitFlag = true
-      this.$emit('mounted')
-    }
-  },
-  updated () {
-    if (this.mountedReady && this.pictureReady && !this.emitFlag) {
-      this.emitFlag = true
-      this.$emit('mounted')
-    }
-  },
-  methods: {
-    getMessageClass () {
-      return this.isContinuous ? 'message-continuous' : 'message-first'
-    }
   }
 }
 </script>
