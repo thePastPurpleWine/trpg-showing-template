@@ -3,12 +3,12 @@
 </template>
 
 <script>
-import ChapterStart from '@/assets/chattingData/ChapterStart.json'
+// import ChapterStart from '@/assets/chattingData/ChapterStart.json'
 export default {
   name: 'test',
   data () {
     return {
-      chapterStart: ChapterStart,
+      chapterStart: [],
       formatList: []
     }
   },

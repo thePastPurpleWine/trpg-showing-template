@@ -1,23 +1,30 @@
 <template>
-  <div class="main">
+  <div id="main" class="main">
+    <audio id="bgm" muted></audio>
+    <audio id="se" muted></audio>
     <div class="chatting-window">
       <div class="placeholder-top"/>
       <chatting-item v-for="(item, index) in chattingItemList"
                      :key="index"
-                     :id="'chatting-item-' + index"
+                     :id="'chatting-item-' + item.index"
                      :head="item.head"
                      :nickname="item.nickname"
                      :content="item.content"
                      :type="item.type"
                      :is-continuous="item.isContinuous"
                      :picture="item.picture"
-                     @mounted="discussMessageExecEnd(index)"
+                     @mounted="discussMessageExecEnd(item.index)"
       />
     </div>
-    <div class="main-stage" v-if="nowStoryMassage">
-      <display style="width: 1200px; height: 40%; position: absolute;"/>
-      <role-image style="margin-top: 240px"/>
-      <role-dialog :id="nowStoryMassage.id"
+    <div class="main-stage">
+      <display class="display"
+               :filepath="picture.filepath"
+               :duration="picture.duration"
+               :waiting="picture.waiting"
+               :trigger="pictureTrigger"/>
+      <role-image v-if="nowStoryMassage" style="margin-top: 240px"/>
+      <role-dialog v-if="nowStoryMassage"
+                   :id="nowStoryMassage.id"
                    :is-system="nowStoryMassage.isSystem"
                    :name="nowStoryMassage.name"
                    :content="nowStoryMassage.content"
@@ -28,7 +35,8 @@
 </template>
 <script>
 import ChattingItem from '@/views/components/ChattingItem'
-import ChapterStart from '@/assets/chattingData/ChapterStart.json'
+import DiscussEvent from '@/assets/play/0-discuss-event.json'
+import DiscussPlay from '@/assets/play/0-discuss.json'
 import RoleImage from '@/views/components/RoleImage'
 import RoleDialog from '@/views/components/RoleDialog'
 import Display from '@/views/components/Display'
@@ -43,6 +51,7 @@ export default {
   },
   data () {
     return {
+      backgroundImageUrl: 'background.png',
       chattingItemList: [],
       storyMassage: {
         id: '',
@@ -52,11 +61,29 @@ export default {
         voice: '',
         delay: 500
       },
+      bgmPlayer: undefined,
+      sePlayer: undefined,
+      picture: {
+        filepath: undefined,
+        waiting: false,
+        duration: undefined
+      },
+      pictureTrigger: false,
+      bgmEvent:
+        {
+          type: 'bgm',
+          param: [
+            '0-ハッピー☆マテリアル(Acoustic Version).mp3',
+            '0-Island Fortress.mp3',
+            '0-Beautiful Morning.mp3'
+          ]
+        },
       // 讨论信息列表
-      discussMsgList: ChapterStart,
+      discussMsgList: DiscussPlay,
       // 故事信息列表
       storyMsgList: [
         {
+          index: 0,
           id: '',
           isSystem: false,
           name: '谢拉',
@@ -66,7 +93,7 @@ export default {
         }
       ],
       // 讨论事件列表
-      discussEventMap: {},
+      discussEventMap: DiscussEvent,
       // 故事事件列表
       storyEventMap: {},
       nextDiscussMassage: undefined,
@@ -89,13 +116,25 @@ export default {
 
     }
   },
+  computed: {
+    backgroundImageStyle () {
+      return `background-image: url("${this.backgroundImageUrl}")`
+    }
+  },
   mounted () {
+    this.bgmPlayer = document.getElementById('bgm')
+    this.bgmPlayer.loop = false
+    this.sePlayer = document.getElementById('se')
+    this.sePlayer.loop = false
+
+    this.eventBackground('background.png')
+    this.eventExec(this.bgmEvent)
     setTimeout(() => {
       this.discussMessageLoad(0)
     }, 3000)
-    setTimeout(() => {
-      this.storyMessageLoad(0)
-    }, 3000)
+    // setTimeout(() => {
+    //   this.storyMessageLoad(0)
+    // }, 3000)
   },
   watch: {
     nowStoryMassage (message) {
@@ -108,7 +147,7 @@ export default {
     nowDiscussMassage (message) {
       // 消息节点同步
       if (this.awaitDiscussId === message.id) {
-        // this.storyMsgExec(this.nextStoryMassage)
+        this.storyMessageExec(this.nextStoryMassage)
         this.awaitDiscussId = undefined
       }
       // 执行事件
@@ -161,15 +200,9 @@ export default {
       const eventList = this.discussEventMap[id]
       if (eventList) {
         eventList.forEach((event) => {
-          setTimeout(() => this.discussEventExec(event))
+          setTimeout(() => this.eventExec(event))
         })
       }
-    },
-    /**
-     * 讨论事件执行
-     **/
-    discussEventExec (event) {
-      // 执行事件
     },
     /**
      * 故事消息加载
@@ -180,12 +213,12 @@ export default {
         return
       }
       this.nextStoryMassage = this.storyMsgList[index]
-      if (!this.nextStoryMassage.syncId || this.nowDiscussMassage.id === this.nextStoryMassage.syncId) {
-        // 无需同步时，立即执行
-        this.storyMessageExec(this.nextStoryMassage)
-      } else {
+      if (!!this.nextStoryMassage.syncId && this.nowDiscussMassage.id !== this.nextStoryMassage.syncId) {
         // 设置等待故事id
         this.awaitDiscussId = this.nextStoryMassage.syncId
+      } else {
+        // 无需同步时，立即执行
+        this.storyMessageExec(this.nextStoryMassage)
       }
     },
     /**
@@ -211,15 +244,85 @@ export default {
       const eventList = this.storyEventMap[id]
       if (eventList) {
         eventList.forEach((event) => {
-          setTimeout(() => this.storyEventExec(event))
+          setTimeout(() => this.eventExec(event))
         })
       }
     },
     /**
-     * 故事事件执行
+     * 事件执行
      **/
-    storyEventExec (event) {
+    eventExec (event) {
       // 执行事件
+      switch (event.type) {
+        case 'bg':
+          this.eventBackground(event.param)
+          break
+        case 'bgm':
+          this.eventBGM(event.param)
+          break
+        case 'se':
+          this.eventSE(event.param)
+          break
+        case 'pic':
+          this.eventPicture(event.param)
+          break
+        case 'pic-disappear':
+          this.eventPictureDisappear()
+          break
+      }
+    },
+    /**
+     * 事件列表
+     **/
+    /**
+     * 更换背景图片
+     * @param imagePath 图片位于 assets 中的相对路径
+     **/
+    eventBackground (imagePath) {
+      const src = require('@/assets/' + imagePath)
+      const mainDiv = document.getElementById('main')
+      mainDiv.style.backgroundImage = 'url(' + src + ')'
+    },
+    /**
+     * 展示图片
+     * @param picture 图片事件参数
+     **/
+    eventPicture (picture) {
+      this.picture = picture
+      this.pictureTrigger = !this.pictureTrigger
+    },
+    /**
+     * 消失图片
+     **/
+    eventPictureDisappear () {
+      this.pictureTrigger = !this.pictureTrigger
+    },
+    /**
+     * 播放音效
+     * @param se 音效文件名
+     **/
+    eventSE (se) {
+      this.sePlayer.src = require('@/assets/se/' + se + '.ogg')
+      this.sePlayer.play()
+    },
+    /**
+     * 播放音乐
+     * @param bgmList 音乐文件名列表
+     **/
+    eventBGM (bgmList) {
+      const playBgm = (index) => {
+        if (index >= bgmList.length) {
+          this.bgmPlayer.pause()
+          return
+        }
+
+        this.bgmPlayer.src = require('@/assets/bgm/' + bgmList[index])
+        this.bgmPlayer.addEventListener('ended', () => setTimeout(playBgm(index + 1), 4000), false)
+        this.bgmPlayer.play()
+        this.bgmPlayer.loop = false
+      }
+
+      playBgm(0)
     }
   }
 }
@@ -230,19 +333,19 @@ export default {
 .main {
   width: 1920px;
   height: 1080px;
-  background-image: url("../assets/宿舍3.png");
   display: flex;
 
   padding: @padding-size 0;
 }
 
 .chatting-window {
-  width: 32%;
+  width: 31%;
   height: 100%;
-  max-width: 32%;
+  max-width: 31%;
   max-height: 100%;
 
-  padding: 0 20px;
+  padding-left: 20px;
+  padding-right: 5px;
 
   overflow: hidden;
 
@@ -256,4 +359,21 @@ export default {
   width: 1200px;
   height: 100%;
 }
+
+// 间章
+.display {
+  width: 1200px;
+  height: 800px;
+  margin-top: 30px;
+  position: absolute;
+}
+
+// 正文
+//.display {
+//  width: 960px;
+//  height: 600px;
+//  margin-top: 30px;
+//  margin-left: 240px;
+//  position: absolute;
+//}
 </style>
