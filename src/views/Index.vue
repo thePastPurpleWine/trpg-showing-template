@@ -22,12 +22,14 @@
                :duration="picture.duration"
                :waiting="picture.waiting"
                :trigger="pictureTrigger"/>
-      <role-image v-if="nowStoryMassage" style="margin-top: 240px"/>
-      <role-dialog v-if="nowStoryMassage"
+      <role-image v-show="false" class="role-image"/>
+      <role-dialog class="role-dialog"
+                   v-show="nowStoryMassage.id"
                    :id="nowStoryMassage.id"
-                   :is-system="nowStoryMassage.isSystem"
+                   :type="nowStoryMassage.type"
                    :name="nowStoryMassage.name"
                    :content="nowStoryMassage.content"
+                   :dice="nowStoryMassage.dice"
                    @playEnd="storyMessageExecEnd"
       />
     </div>
@@ -71,27 +73,32 @@ export default {
         duration: undefined
       },
       pictureTrigger: false,
-      bgmEvent:
-        {
-          type: 'bgm',
-          param: [
-            '0-ハッピー☆マテリアル(Acoustic Version).mp3',
-            '0-Island Fortress.mp3',
-            '0-Beautiful Morning.mp3'
-          ]
-        },
+      bgmEvent: {
+        type: 'bgm',
+        param: [
+          '0-ハッピー☆マテリアル(Acoustic Version).mp3',
+          '0-Island Fortress.mp3',
+          '0-Beautiful Morning.mp3'
+        ]
+      },
       // 讨论信息列表
       discussMsgList: DiscussPlay,
       // 故事信息列表
       storyMsgList: [
         {
           index: 0,
-          id: '',
-          isSystem: false,
+          id: '11',
           name: '谢拉',
-          content: '故事的起因，是宿舍中的谢拉被人杀害，死因、其他线索以及公园湖边的案发地点一概被警察封锁了',
+          // content: '故事的起因，是宿舍中的谢拉被人杀害，死因、其他线索以及公园湖边的案发地点一概被警察封锁了',
           voice: '',
-          delay: 500
+          delay: 500,
+          type: 'dice',
+          dice: {
+            num: 1,
+            max: 100,
+            value: 60,
+            check: 50
+          }
         }
       ],
       // 讨论事件列表
@@ -101,11 +108,14 @@ export default {
       nextDiscussMassage: undefined,
       nowDiscussMassage: undefined,
       nextStoryMassage: undefined,
-      nowStoryMassage: undefined,
+      nowStoryMassage: {},
+      // 节点同步参数
+      awaitDiscussSyncTag: undefined,
+      awaitStorySyncTag: undefined,
       message: {
         index: Number, // 序号
         id: String, // 唯一id
-        syncId: String // 同步id
+        syncTag: String // 同步id
         // other
       },
       event: {
@@ -140,16 +150,16 @@ export default {
   watch: {
     nowStoryMassage (message) {
       // 消息节点同步
-      if (this.awaitStoryId === message.id) {
+      if (this.awaitStorySyncTag && this.awaitStorySyncTag === message.syncTag) {
         this.discussMessageExec(this.nextDiscussMassage)
-        this.awaitStoryId = undefined
+        this.awaitStorySyncTag = undefined
       }
     },
     nowDiscussMassage (message) {
       // 消息节点同步
-      if (this.awaitDiscussId === message.id) {
+      if (this.awaitDiscussSyncTag && this.awaitDiscussSyncTag === message.syncTag) {
         this.storyMessageExec(this.nextStoryMassage)
-        this.awaitDiscussId = undefined
+        this.awaitDiscussSyncTag = undefined
       }
       // 执行事件
       this.discussEventLoad(message.id)
@@ -166,6 +176,7 @@ export default {
       this.theOpening().then(() => {
         setTimeout(() => {
           this.discussMessageLoad(0)
+          this.storyMessageLoad(0)
           // this.finishFlag.bgm = true
           this.finishFlag.story = true
         }, 2000)
@@ -219,12 +230,12 @@ export default {
         return
       }
       this.nextDiscussMassage = this.discussMsgList[index]
-      if (!this.nextDiscussMassage.syncId || this.nowStoryMassage.id === this.nextDiscussMassage.syncId) {
-        // 无需同步时，立即执行
-        this.discussMessageExec(this.nextDiscussMassage)
-      } else {
+      if (this.nextDiscussMassage.syncTag && this.nowStoryMassage.syncTag !== this.nextDiscussMassage.syncTag) {
         // 设置等待故事id
-        this.awaitStoryId = this.nextDiscussMassage.syncId
+        this.awaitStorySyncTag = this.nextDiscussMassage.syncTag
+      } else {
+        // 无需等待同步时，立即执行
+        this.discussMessageExec(this.nextDiscussMassage)
       }
     },
     /**
@@ -269,11 +280,11 @@ export default {
         return
       }
       this.nextStoryMassage = this.storyMsgList[index]
-      if (!!this.nextStoryMassage.syncId && this.nowDiscussMassage.id !== this.nextStoryMassage.syncId) {
+      if (!!this.nextStoryMassage.syncTag && this.nowDiscussMassage.syncTag !== this.nextStoryMassage.syncTag) {
         // 设置等待故事id
-        this.awaitDiscussId = this.nextStoryMassage.syncId
+        this.awaitDiscussSyncTag = this.nextStoryMassage.syncTag
       } else {
-        // 无需同步时，立即执行
+        // 无需等待同步时，立即执行
         this.storyMessageExec(this.nextStoryMassage)
       }
     },
@@ -366,20 +377,26 @@ export default {
      * @param bgmList 音乐文件名列表
      **/
     eventBGM (bgmList) {
-      const playBgm = (index) => {
+      let index = 0
+
+      const interval = () => {
+        setTimeout(playBgm(), 5000)
+      }
+
+      const playBgm = () => {
         if (index >= bgmList.length) {
-          this.bgmPlayer.pause()
+          this.bgmPlayer.removeEventListener('ended', interval)
           this.finishFlag.bgm = true
           return
         }
 
         this.bgmPlayer.src = require('@/assets/bgm/' + bgmList[index])
-        this.bgmPlayer.addEventListener('ended', () => setTimeout(playBgm(index + 1), 5000), false)
         this.bgmPlayer.play()
-        this.bgmPlayer.loop = false
+        index++
       }
 
-      playBgm(0)
+      this.bgmPlayer.addEventListener('ended', interval)
+      // playBgm(0)
     }
   }
 }
@@ -426,20 +443,33 @@ export default {
   height: 100%;
 }
 
-// 间章
-.display {
-  width: 1200px;
-  height: 800px;
-  margin-top: 30px;
-  position: absolute;
+.role-image {
+  z-index: 0;
+  margin-bottom: -50px;
+  opacity: 1;
+  margin-top: 240px
 }
 
-// 正文
+.role-dialog {
+  height: 360px;
+  word-break: break-all;
+  font-weight: lighter;
+}
+
+// 间章
 //.display {
-//  width: 960px;
-//  height: 600px;
+//  width: 1200px;
+//  height: 800px;
 //  margin-top: 30px;
-//  margin-left: 240px;
 //  position: absolute;
 //}
+
+// 正文
+.display {
+  width: 960px;
+  height: 600px;
+  margin-top: 30px;
+  margin-left: 240px;
+  position: absolute;
+}
 </style>

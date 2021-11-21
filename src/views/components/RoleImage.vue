@@ -86,10 +86,4 @@ export default {
 </script>
 
 <style scoped lang="less">
-.main-role {
-  z-index: 0;
-  margin-bottom: -50px;
-  opacity: 1;
-  //padding-left: 40px;
-}
 </style>
