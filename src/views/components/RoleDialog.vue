@@ -61,7 +61,7 @@ export default {
       diceSuffix: '',
       audio: undefined,
       typingEnd: false,
-      audioEnd: false,
+      audioEnd: true,
       imageReady: false
     }
   },
@@ -99,7 +99,7 @@ export default {
         // this.playAudio()
 
         this.typingEnd = false
-        this.audioEnd = false
+        this.audioEnd = true
       }
     },
     dice (val) {
@@ -112,6 +112,7 @@ export default {
     },
     playEnd (val) {
       if (val) {
+        console.log('playEnd')
         this.$emit('playEnd')
       }
     }
@@ -132,7 +133,11 @@ export default {
         if (this.currentContent.length < this.content.length) {
           this.currentContent = this.content.slice(0, this.currentContent.length + 1)
         } else {
-          this.typingEnd = true
+          // 等待阅读
+          const delay = 500 + 120 * this.currentContent.length
+          setTimeout(() => {
+            this.typingEnd = true
+          }, delay)
           clearInterval(timer)
         }
       }, 20)
@@ -221,20 +226,22 @@ export default {
   position: relative;
   top: -360px;
 
-  z-index: 2;
+  z-index: 1;
   height: 88px;
   padding: 16px 180px;
   line-height: 56px;
   font-size: 56px;
   color: black;
-  font-family: '华康海报体W12(P)', serif;
+  font-weight: bolder;
+  /*傻逼字体只适配常用字*/
+  font-family: '萝莉体', serif;
 }
 
 .content-block {
   position: relative;
   top: -360px;
 
-  z-index: 2;
+  z-index: 1;
   padding: 0 160px 0 60px;
   font-size: 40px;
   color: #E9A92D;

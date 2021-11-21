@@ -1,15 +1,19 @@
 <template>
   <div id="role" class="main-role">
-    <img src="../../assets/小梺/普通.png">
+    <img :src="roleImageSrc" alt="">
   </div>
 </template>
 
 <script>
 export default {
   name: 'RoleImage',
+  props: {
+    role: String
+  },
   data () {
     return {
-      element: undefined
+      element: undefined,
+      roleImageSrc: ''
     }
   },
   computed: {
@@ -19,10 +23,31 @@ export default {
   },
   mounted () {
     this.element = document.getElementById('role')
-    // setTimeout(() => this.fadeIn(40, 0.2), 0)
-    // setTimeout(() => this.fadeOut(40, 0.2), 10000)
+    this.preload()
+  },
+  watch: {
+    role (val) {
+      if (val) {
+        const role = val.split('-')[0]
+        const image = role + '-' + val.split('-')[1] + '.png'
+
+        this.roleImageSrc = require('@/assets/role/' + role + '/' + image)
+      } else {
+        this.roleImageSrc = ''
+      }
+    }
   },
   methods: {
+    preload () {
+      const roleList = ['aj', 'dj', 'hy', 'tz', 'xx']
+      for (const role of roleList) {
+        for (const i in 9) {
+          new Image().src = require('@/assets/role/' + role + '/' + role + '-' + i + '.png')
+        }
+      }
+      new Image().src = require('@/assets/role/other/other-小猴.png')
+      new Image().src = require('@/assets/role/xl/xl-1.png')
+    },
     fadeIn (distance, second) {
       const paddingLeftStr = this.elementStyle.paddingLeft
       const paddingLeftValueStr = paddingLeftStr.slice(0, paddingLeftStr.length - 2)

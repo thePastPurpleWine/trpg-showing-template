@@ -22,7 +22,7 @@
                :duration="picture.duration"
                :waiting="picture.waiting"
                :trigger="pictureTrigger"/>
-      <role-image v-show="false" class="role-image"/>
+      <role-image class="role-image" :role="nowStoryMassage.role"/>
       <role-dialog class="role-dialog"
                    v-show="nowStoryMassage.id"
                    :id="nowStoryMassage.id"
@@ -38,8 +38,9 @@
 </template>
 <script>
 import ChattingItem from '@/views/components/ChattingItem'
-import DiscussEvent from '@/assets/play/0-discuss-event.json'
-import DiscussPlay from '@/assets/play/0-discuss.json'
+// import DiscussEvent from '@/assets/play/0-discuss-event.json'
+import DiscussPlay from '@/assets/play/1-discuss.json'
+import StoryPlay from '@/assets/play/1-story.json'
 import RoleImage from '@/views/components/RoleImage'
 import RoleDialog from '@/views/components/RoleDialog'
 import Display from '@/views/components/Display'
@@ -84,25 +85,9 @@ export default {
       // 讨论信息列表
       discussMsgList: DiscussPlay,
       // 故事信息列表
-      storyMsgList: [
-        {
-          index: 0,
-          id: '11',
-          name: '谢拉',
-          // content: '故事的起因，是宿舍中的谢拉被人杀害，死因、其他线索以及公园湖边的案发地点一概被警察封锁了',
-          voice: '',
-          delay: 500,
-          type: 'dice',
-          dice: {
-            num: 1,
-            max: 100,
-            value: 60,
-            check: 50
-          }
-        }
-      ],
+      storyMsgList: StoryPlay,
       // 讨论事件列表
-      discussEventMap: DiscussEvent,
+      discussEventMap: {},
       // 故事事件列表
       storyEventMap: {},
       nextDiscussMassage: undefined,
@@ -110,12 +95,12 @@ export default {
       nextStoryMassage: undefined,
       nowStoryMassage: {},
       // 节点同步参数
-      awaitDiscussSyncTag: undefined,
-      awaitStorySyncTag: undefined,
+      waitingDiscuss: undefined,
+      waitingStory: undefined,
       message: {
         index: Number, // 序号
         id: String, // 唯一id
-        syncTag: String // 同步id
+        waiting: Boolean // 同步id
         // other
       },
       event: {
@@ -138,6 +123,9 @@ export default {
     },
     isFinished () {
       return this.finishFlag.discuss && this.finishFlag.story
+    },
+    allWaiting () {
+      return this.waitingDiscuss && this.waitingStory
     }
   },
   mounted () {
@@ -148,19 +136,20 @@ export default {
     this.sePlayer.loop = false
   },
   watch: {
-    nowStoryMassage (message) {
+    allWaiting (val) {
       // 消息节点同步
-      if (this.awaitStorySyncTag && this.awaitStorySyncTag === message.syncTag) {
+      if (val) {
         this.discussMessageExec(this.nextDiscussMassage)
-        this.awaitStorySyncTag = undefined
+        this.storyMessageExec(this.nextStoryMassage)
+        this.waitingStory = undefined
+        this.waitingDiscuss = undefined
       }
     },
+    nowStoryMassage (message) {
+      // 执行事件
+      this.storyEventLoad(message.id)
+    },
     nowDiscussMassage (message) {
-      // 消息节点同步
-      if (this.awaitDiscussSyncTag && this.awaitDiscussSyncTag === message.syncTag) {
-        this.storyMessageExec(this.nextStoryMassage)
-        this.awaitDiscussSyncTag = undefined
-      }
       // 执行事件
       this.discussEventLoad(message.id)
     },
@@ -176,7 +165,7 @@ export default {
       this.theOpening().then(() => {
         setTimeout(() => {
           this.discussMessageLoad(0)
-          this.storyMessageLoad(0)
+          this.storyMessageLoad(59)
           // this.finishFlag.bgm = true
           this.finishFlag.story = true
         }, 2000)
@@ -230,9 +219,9 @@ export default {
         return
       }
       this.nextDiscussMassage = this.discussMsgList[index]
-      if (this.nextDiscussMassage.syncTag && this.nowStoryMassage.syncTag !== this.nextDiscussMassage.syncTag) {
-        // 设置等待故事id
-        this.awaitStorySyncTag = this.nextDiscussMassage.syncTag
+      if (this.nextDiscussMassage.waiting) {
+        // 设置等待故事
+        this.waitingStory = true
       } else {
         // 无需等待同步时，立即执行
         this.discussMessageExec(this.nextDiscussMassage)
@@ -280,9 +269,9 @@ export default {
         return
       }
       this.nextStoryMassage = this.storyMsgList[index]
-      if (!!this.nextStoryMassage.syncTag && this.nowDiscussMassage.syncTag !== this.nextStoryMassage.syncTag) {
+      if (this.nextStoryMassage.waiting) {
         // 设置等待故事id
-        this.awaitDiscussSyncTag = this.nextStoryMassage.syncTag
+        this.waitingDiscuss = true
       } else {
         // 无需等待同步时，立即执行
         this.storyMessageExec(this.nextStoryMassage)
@@ -408,6 +397,7 @@ export default {
   position: absolute;
   background: black;
   margin-top: -20px;
+  z-index: 1;
 }
 
 @padding-size: 20px;
@@ -447,7 +437,10 @@ export default {
   z-index: 0;
   margin-bottom: -50px;
   opacity: 1;
-  margin-top: 240px
+  margin-top: 240px;
+  margin-left: -10px;
+  width: 400px;
+  height: 480px;
 }
 
 .role-dialog {
