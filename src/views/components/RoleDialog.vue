@@ -6,19 +6,55 @@
       <span v-show="!isSystem">{{ name }}</span>
     </div>
     <div id="contentBlock" :class="contentBlockClass" v-show="imageReady">
-      <span>{{ currentContent }}</span>
-      <span id="diceSuffixText" style="opacity: 0;">{{ diceSuffix }}</span>
+      <span :style="{ 'color': roleConfig.color }">{{ currentContent }}</span>
+      <span id="diceSuffixText" style="opacity: 0; color: #dd0000;">{{ diceSuffix }}</span>
     </div>
   </div>
 </template>
 
 <script>
 const MAX_CONTENT = 92
+const RoleConfigMap = {
+  小梺: {
+    color: '#F3C800',
+    volume: 0.9
+  },
+  谢拉: {
+    color: '#2B2B2F',
+    volume: 0.9
+  },
+  大姐: {
+    color: '#93B9D4',
+    volume: 0.9
+
+  },
+  花怡: {
+    color: '#E79598',
+    volume: 0.9
+
+  },
+  桃子: {
+    color: '#8B7FAB',
+    volume: 1
+  },
+  阿娟: {
+    color: '#F399E3',
+    volume: 0.9
+  },
+  小猴: {
+    color: '#8B5900',
+    volume: 0.9
+  },
+  小黑: {
+    color: '#7D005B',
+    volume: 0.9
+  }
+}
 
 export default {
   name: 'RoleDialog',
   props: {
-    id: {
+    voiceId: {
       type: String,
       required: false
     },
@@ -41,16 +77,10 @@ export default {
     },
     dice: {
       type: Object,
-      required: false,
-      validator (val) {
-        for (const key of ['max', 'num', 'check', 'value']) {
-          if (val[key] === undefined) {
-            return false
-          }
-        }
-
-        return true
-      }
+      required: false
+    },
+    chapter: {
+      type: String
     }
   },
   data () {
@@ -62,7 +92,8 @@ export default {
       audio: undefined,
       typingEnd: false,
       audioEnd: true,
-      imageReady: false
+      imageReady: false,
+      roleConfigMap: RoleConfigMap
     }
   },
   computed: {
@@ -87,6 +118,13 @@ export default {
     },
     dialogImage () {
       return this.isSystem ? this.dialogSystem : this.dialogNormal
+    },
+    roleConfig () {
+      if (this.roleConfigMap[this.name] === undefined) {
+        return {}
+      } else {
+        return this.roleConfigMap[this.name]
+      }
     }
   },
   watch: {
@@ -96,10 +134,10 @@ export default {
     content (val) {
       if (val && !this.isDice) {
         this.typeContentNormal()
-        // this.playAudio()
+        this.playAudio()
 
         this.typingEnd = false
-        this.audioEnd = true
+        this.audioEnd = false
       }
     },
     dice (val) {
@@ -122,8 +160,7 @@ export default {
   },
   methods: {
     getAudioById () {
-      // TODO getAudioById
-      return ''
+      return require('@/assets/voice' + `/${this.chapter}/${this.voiceId}.wav`)
     },
     typeContentNormal () {
       this.currentContent = ''
@@ -134,10 +171,10 @@ export default {
           this.currentContent = this.content.slice(0, this.currentContent.length + 1)
         } else {
           // 等待阅读
-          const delay = 500 + 120 * this.currentContent.length
+          // const delay = 500 + 120 * this.currentContent.length
           setTimeout(() => {
             this.typingEnd = true
-          }, delay)
+          }, 1000)
           clearInterval(timer)
         }
       }, 20)
@@ -195,26 +232,20 @@ export default {
       this.audio.play()
     },
     playAudio () {
+      const voiceEnd = () => {
+        setTimeout(() => {
+          this.audioEnd = true
+          this.audio.removeEventListener('ended', voiceEnd)
+        }, 400)
+      }
       const audioSrc = this.getAudioById()
       if (!audioSrc) {
         this.audioEnd = true
       } else {
-        this.audio.addListener('ended', (ended) => {
-          if (ended) {
-            this.audioEnd = true
-          }
-        })
-        this.audio.load()
+        this.audio.addEventListener('ended', voiceEnd)
+        this.audio.src = audioSrc
+        this.audio.volume = this.roleConfig.volume
         this.audio.play()
-      }
-    },
-    contentBlockFix () {
-      const e = document.getElementById('contentBlock')
-
-      if (this.isSystem) {
-        e.style.marginTop = '-20px'
-      } else {
-        e.style.marginTop = ''
       }
     }
   }

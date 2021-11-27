@@ -111,6 +111,9 @@ export default {
 
     if (this.picture) {
       this.pictureSrc = chatImagesDict.get(this.picture)
+      if (this.pictureSrc === undefined) {
+        this.pictureSrc = require('@/assets/images/' + this.picture + '.png')
+      }
     } else {
       this.pictureReady = true
     }
@@ -192,6 +195,7 @@ export default {
 
       img {
         vertical-align: bottom;
+        max-width: 475px;
       }
     }
   }

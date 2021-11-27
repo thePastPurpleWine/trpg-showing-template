@@ -3,20 +3,18 @@
 </template>
 
 <script>
-// import ChapterStart from '@/assets/chattingData/ChapterStart.json'
+import DiscussPlay from '@/assets/play/1-story.json'
 export default {
   name: 'test',
   data () {
     return {
-      chapterStart: [],
+      chapterStart: DiscussPlay,
       formatList: []
     }
   },
   mounted () {
     this.formatList = this.chapterStart.map((data, index) => {
       data.index = index
-      data.id = 'discuss-' + this.guid()
-      data.syncId = undefined
       return data
     })
     console.log(JSON.stringify(this.formatList))

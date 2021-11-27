@@ -29,83 +29,29 @@ export default {
   },
   watch: {
     trigger () {
-      if (this.imageVisible) {
-        if (this.waiting) {
-          this.fadeOut(50, 1)
+      if (!this.imageVisible) {
+        this.imageSrc = require('@/assets/picture/' + this.filepath)
+        this.fadeIn()
+        if (!this.waiting) {
+          setTimeout(() => {
+            this.fadeOut()
+          }, this.duration)
         }
       } else {
-        this.imageSrc = require('@/assets/picture/' + this.filepath)
-        this.fadeIn(50, 1)
-        if (!this.waiting) {
-          setTimeout(() => this.fadeOut(50, 1), this.duration)
+        if (this.waiting) {
+          this.fadeOut()
         }
       }
     }
   },
   methods: {
-    fadeIn (distance, second) {
+    fadeIn () {
       this.imageVisible = true
-
-      const marginLeftStr = this.elementStyle.marginLeft
-      const marginLeftValueStr = marginLeftStr.slice(0, marginLeftStr.length - 2)
-
-      const times = Math.ceil(second * 50)
-      const pieceMarginLeft = parseFloat((distance / times).toFixed(3))
-      const pieceOpacity = parseFloat((1 / times).toFixed(4))
-
-      const start = parseInt(marginLeftValueStr) ? parseInt(marginLeftValueStr) : 0
-      const target = start + distance
-      let totalMarginLeft = start
-      let totalOpacity = 0
-
-      const startTime = Date.now()
-      console.log('start fade in', 0, start, target)
-      const timer = setInterval(() => {
-        if (totalMarginLeft < target) {
-          totalMarginLeft += pieceMarginLeft
-          totalOpacity += pieceOpacity
-          this.elementStyle.marginLeft = totalMarginLeft + 'px'
-          this.elementStyle.opacity = totalOpacity
-        } else {
-          console.log('end fade in', Date.now() - startTime)
-          this.elementStyle.marginLeft = target + 'px'
-          this.elementStyle.opacity = 1
-          clearInterval(timer)
-        }
-      }, 20)
+      this.elementStyle.opacity = '1'
     },
-    fadeOut (distance, second) {
-      const marginLeftStr = this.elementStyle.marginLeft
-      const marginLeftValueStr = marginLeftStr.slice(0, marginLeftStr.length - 2)
-
-      const times = Math.ceil(second * 50)
-      const pieceMarginLeft = parseFloat((distance / times).toFixed(3))
-      const pieceOpacity = parseFloat((1 / times).toFixed(4))
-
-      const start = parseInt(marginLeftValueStr) ? parseInt(marginLeftValueStr) : 0
-      const target = start + distance
-      let totalMarginLeft = start
-      let totalOpacity = 1
-
-      const startTime = Date.now()
-      console.log('start fade out', 0)
-      const timer = setInterval(() => {
-        if (totalMarginLeft < target) {
-          totalMarginLeft += pieceMarginLeft
-          totalOpacity -= pieceOpacity
-          this.elementStyle.marginLeft = totalMarginLeft + 'px'
-          this.elementStyle.opacity = totalOpacity
-        } else {
-          console.log('end fade out', Date.now() - startTime)
-          this.elementStyle.marginLeft = target + 'px'
-          this.elementStyle.opacity = 0
-          clearInterval(timer)
-
-          this.elementStyle.marginLeft = '0'
-          this.imageSrc = ''
-          this.imageVisible = false
-        }
-      }, 20)
+    fadeOut () {
+      this.elementStyle.opacity = '0'
+      this.imageVisible = false
     }
   }
 }
@@ -120,5 +66,7 @@ export default {
   max-width: 100%;
   max-height: 100%;
   margin: auto ;
+
+  transition: opacity 1.5s linear;
 }
 </style>

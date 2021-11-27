@@ -2,6 +2,7 @@
   <div id="main" class="main">
     <audio id="bgm" muted></audio>
     <audio id="se" muted></audio>
+    <img id="theTestament" :src="theTestamentImageSrc" class="the-snow-testament" alt="">
     <div class="chatting-window">
       <div class="placeholder-top"/>
       <chatting-item v-for="(item, index) in chattingItemList"
@@ -25,20 +26,22 @@
       <role-image class="role-image" :role="nowStoryMassage.role"/>
       <role-dialog class="role-dialog"
                    v-show="nowStoryMassage.id"
-                   :id="nowStoryMassage.id"
+                   :voiceId="nowStoryMassage.voiceId"
                    :type="nowStoryMassage.type"
                    :name="nowStoryMassage.name"
                    :content="nowStoryMassage.content"
                    :dice="nowStoryMassage.dice"
+                   chapter="1"
                    @playEnd="storyMessageExecEnd"
       />
     </div>
-    <div id="curtain" class="curtain" @click="start"/>
+    <div v-if="curtainVisible" id="curtain" class="curtain" @click="start"/>
   </div>
 </template>
 <script>
 import ChattingItem from '@/views/components/ChattingItem'
-// import DiscussEvent from '@/assets/play/0-discuss-event.json'
+import DiscussEvent from '@/assets/play/1-discuss-event.json'
+import StoryEvent from '@/assets/play/1-story-event.json'
 import DiscussPlay from '@/assets/play/1-discuss.json'
 import StoryPlay from '@/assets/play/1-story.json'
 import RoleImage from '@/views/components/RoleImage'
@@ -55,6 +58,7 @@ export default {
   },
   data () {
     return {
+      started: false,
       curtainVisible: true,
       backgroundImageUrl: 'background.png',
       chattingItemList: [],
@@ -76,10 +80,20 @@ export default {
       pictureTrigger: false,
       bgmEvent: {
         type: 'bgm',
+        // param: [
+        //   '0-ハッピー☆マテリアル(Acoustic Version).mp3',
+        //   '0-Island Fortress.mp3',
+        //   '0-Beautiful Morning.mp3'
+        // ]
         param: [
-          '0-ハッピー☆マテリアル(Acoustic Version).mp3',
-          '0-Island Fortress.mp3',
-          '0-Beautiful Morning.mp3'
+          '1-消沈.mp3',
+          '1-WS Town.mp3',
+          '1-33.mp3',
+          '1-ED6518.mp3',
+          '1-冰之女王.mp3',
+          '1-可靠的女人.mp3',
+          '1-Nicedesuyo.mp3',
+          '1-Konata no Theme.mp3'
         ]
       },
       // 讨论信息列表
@@ -87,9 +101,9 @@ export default {
       // 故事信息列表
       storyMsgList: StoryPlay,
       // 讨论事件列表
-      discussEventMap: {},
+      discussEventMap: DiscussEvent,
       // 故事事件列表
-      storyEventMap: {},
+      storyEventMap: StoryEvent,
       nextDiscussMassage: undefined,
       nowDiscussMassage: undefined,
       nextStoryMassage: undefined,
@@ -114,7 +128,8 @@ export default {
         bgm: false,
         discuss: false,
         story: false
-      }
+      },
+      theTestamentImageSrc: require('@/assets/picture/the Snow Testament.jpg')
     }
   },
   computed: {
@@ -129,7 +144,9 @@ export default {
     }
   },
   mounted () {
-    this.eventBackground('background.png')
+    this.eventBackground('宿舍.png')
+    const curtainElement = document.getElementById('curtain')
+    curtainElement.style.opacity = '1'
     this.bgmPlayer = document.getElementById('bgm')
     this.bgmPlayer.loop = false
     this.sePlayer = document.getElementById('se')
@@ -155,21 +172,28 @@ export default {
     },
     isFinished (val) {
       if (val) {
-        setTimeout(() => this.theConcluding(), 2000)
+        this.theConcluding()
       }
     }
   },
   methods: {
     start () {
-      this.eventExec(this.bgmEvent)
-      this.theOpening().then(() => {
-        setTimeout(() => {
-          this.discussMessageLoad(0)
-          this.storyMessageLoad(59)
-          // this.finishFlag.bgm = true
-          this.finishFlag.story = true
-        }, 2000)
-      })
+      if (this.started) {
+        return
+      }
+
+      this.theOpening()
+      this.started = true
+      setTimeout(() => {
+        this.eventExec(this.bgmEvent)
+      }, 5000)
+      setTimeout(() => {
+        this.storyMessageLoad(0)
+      }, 4000)
+      setTimeout(() => {
+        this.discussMessageLoad(0)
+        this.curtainVisible = false
+      }, 6000)
     },
     /**
      * 开幕
@@ -177,37 +201,17 @@ export default {
     theOpening () {
       this.curtainVisible = true
       const curtainElement = document.getElementById('curtain')
-      let opacity = 1
-      return new Promise((resolve) => {
-        const id = setInterval(() => {
-          if (opacity > 0) {
-            opacity -= 0.03
-            curtainElement.style.opacity = opacity
-          } else {
-            curtainElement.style.opacity = '0'
-            this.curtainVisible = false
-            clearInterval(id)
-            resolve()
-          }
-        }, 50)
-      })
+      curtainElement.style.opacity = '0'
     },
     /**
      * 闭幕
      **/
     theConcluding () {
       this.curtainVisible = true
-      const curtainElement = document.getElementById('curtain')
-      let opacity = 0
-      const id = setInterval(() => {
-        if (opacity < 1) {
-          opacity += 0.02
-          curtainElement.style.opacity = opacity
-        } else {
-          curtainElement.style.opacity = '1'
-          clearInterval(id)
-        }
-      }, 50)
+      setTimeout(() => {
+        const curtainElement = document.getElementById('curtain')
+        curtainElement.style.opacity = '1'
+      }, 2000)
     },
     /**
      * 讨论消息加载
@@ -219,6 +223,11 @@ export default {
         return
       }
       this.nextDiscussMassage = this.discussMsgList[index]
+      if (!this.nextDiscussMassage) {
+        this.discussMessageLoad(index + 1)
+        return
+      }
+
       if (this.nextDiscussMassage.waiting) {
         // 设置等待故事
         this.waitingStory = true
@@ -268,7 +277,14 @@ export default {
         this.finishFlag.story = true
         return
       }
+
       this.nextStoryMassage = this.storyMsgList[index]
+      // 生产声音文件名
+      function prefixZero (num, n) {
+        return (Array(n).join(0) + num).slice(-n)
+      }
+      this.nextStoryMassage.voiceId = prefixZero(index, 3) + '-' + this.nextStoryMassage.id
+
       if (this.nextStoryMassage.waiting) {
         // 设置等待故事id
         this.waitingDiscuss = true
@@ -283,6 +299,7 @@ export default {
     storyMessageExec (message) {
       // 更新当前故事节点id
       this.nowStoryMassage = message
+      this.finishFlag.storyPlay = false
     },
     /**
      * 故事消息执行完毕
@@ -291,7 +308,8 @@ export default {
       // 阅读等待
       setTimeout(() => {
         this.storyMessageLoad(this.nowStoryMassage.index + 1)
-      }, this.nowStoryMassage.delay)
+      }, 0)
+      // }, this.nowStoryMassage.delay)
     },
     /**
      * 故事事件加载
@@ -325,6 +343,9 @@ export default {
         case 'pic-disappear':
           this.eventPictureDisappear()
           break
+        case 'temp':
+          this.eventTemp()
+          break
       }
     },
     /**
@@ -335,8 +356,8 @@ export default {
      * @param imagePath 图片位于 assets 中的相对路径
      **/
     eventBackground (imagePath) {
-      const src = require('@/assets/' + imagePath)
       const mainDiv = document.getElementById('main')
+      const src = require('@/assets/background/' + imagePath)
       mainDiv.style.backgroundImage = 'url(' + src + ')'
     },
     /**
@@ -362,6 +383,17 @@ export default {
       this.sePlayer.play()
     },
     /**
+     * TODO 临时事件
+     **/
+    eventTemp () {
+      const e = document.getElementById('theTestament')
+
+      e.style.opacity = '1'
+      setTimeout(() => {
+        e.style.opacity = '0'
+      }, 11000)
+    },
+    /**
      * 播放音乐
      * @param bgmList 音乐文件名列表
      **/
@@ -369,7 +401,7 @@ export default {
       let index = 0
 
       const interval = () => {
-        setTimeout(playBgm(), 5000)
+        setTimeout(() => playBgm(), 9000)
       }
 
       const playBgm = () => {
@@ -380,12 +412,21 @@ export default {
         }
 
         this.bgmPlayer.src = require('@/assets/bgm/' + bgmList[index])
+        if (bgmList[index] === '1-33.mp3') {
+          this.bgmPlayer.volume = 0.15
+        } else if (bgmList[index] === '1-消沈.mp3') {
+          this.bgmPlayer.volume = 0.4
+        } else if (bgmList[index] === '1-可靠的女人.mp3') {
+          this.bgmPlayer.volume = 0.2
+        } else {
+          this.bgmPlayer.volume = 0.25
+        }
         this.bgmPlayer.play()
         index++
       }
 
       this.bgmPlayer.addEventListener('ended', interval)
-      // playBgm(0)
+      playBgm(0)
     }
   }
 }
@@ -398,6 +439,8 @@ export default {
   background: black;
   margin-top: -20px;
   z-index: 1;
+  opacity: 0;
+  transition: opacity 2s linear;
 }
 
 @padding-size: 20px;
@@ -408,6 +451,7 @@ export default {
   display: flex;
 
   padding: @padding-size 0;
+  transition: background-image 2s linear;
 }
 
 .chatting-window {
@@ -419,6 +463,7 @@ export default {
   padding-left: 20px;
   padding-right: 5px;
   //padding-bottom: 180px;
+  margin-left: 40px;
 
   overflow: hidden;
 
@@ -451,18 +496,28 @@ export default {
 
 // 间章
 //.display {
-//  width: 1200px;
+//  width: 1000px;
 //  height: 800px;
 //  margin-top: 30px;
 //  position: absolute;
 //}
 
-// 正文
+// 正剧
 .display {
-  width: 960px;
+  width: 920px;
   height: 600px;
   margin-top: 30px;
-  margin-left: 240px;
+  margin-left: 300px;
   position: absolute;
+}
+
+.the-snow-testament {
+  position: absolute;
+  max-height: 600px;
+  z-index: 1;
+  left: 100px;
+  opacity: 0;
+
+  transition: opacity 2s linear;
 }
 </style>
