@@ -2,7 +2,11 @@
   <div id="main" class="main">
     <audio id="bgm" muted></audio>
     <audio id="se" muted></audio>
-    <img id="theTestament" :src="theTestamentImageSrc" class="the-snow-testament" alt="">
+    <display class="display-side"
+             :filepath="pictureSide.filepath"
+             :duration="pictureSide.duration"
+             :waiting="pictureSide.waiting"
+             :trigger="pictureSideTrigger"/>
     <div class="chatting-window">
       <div class="placeholder-top"/>
       <chatting-item v-for="(item, index) in chattingItemList"
@@ -23,7 +27,6 @@
                :duration="picture.duration"
                :waiting="picture.waiting"
                :trigger="pictureTrigger"/>
-      <role-image class="role-image" :role="nowStoryMassage.role"/>
       <role-dialog class="role-dialog"
                    v-show="nowStoryMassage.id"
                    :voiceId="nowStoryMassage.voiceId"
@@ -31,8 +34,9 @@
                    :name="nowStoryMassage.name"
                    :content="nowStoryMassage.content"
                    :dice="nowStoryMassage.dice"
+                   :role="nowStoryMassage.role"
                    chapter="1"
-                   @playEnd="storyMessageExecEnd"
+                   @playFinish="storyMessageExecEnd"
       />
     </div>
     <div v-if="curtainVisible" id="curtain" class="curtain" @click="start"/>
@@ -44,7 +48,6 @@ import DiscussEvent from '@/assets/play/1-discuss-event.json'
 import StoryEvent from '@/assets/play/1-story-event.json'
 import DiscussPlay from '@/assets/play/1-discuss.json'
 import StoryPlay from '@/assets/play/1-story.json'
-import RoleImage from '@/views/components/RoleImage'
 import RoleDialog from '@/views/components/RoleDialog'
 import Display from '@/views/components/Display'
 
@@ -52,7 +55,6 @@ export default {
   name: 'Index',
   components: {
     ChattingItem,
-    RoleImage,
     RoleDialog,
     Display
   },
@@ -60,7 +62,6 @@ export default {
     return {
       started: false,
       curtainVisible: true,
-      backgroundImageUrl: 'background.png',
       chattingItemList: [],
       storyMassage: {
         id: '',
@@ -78,6 +79,12 @@ export default {
         duration: undefined
       },
       pictureTrigger: false,
+      pictureSide: {
+        filepath: undefined,
+        waiting: false,
+        duration: undefined
+      },
+      pictureSideTrigger: false,
       bgmEvent: {
         type: 'bgm',
         // param: [
@@ -128,14 +135,10 @@ export default {
         bgm: false,
         discuss: false,
         story: false
-      },
-      theTestamentImageSrc: require('@/assets/picture/the Snow Testament.jpg')
+      }
     }
   },
   computed: {
-    backgroundImageStyle () {
-      return `background-image: url("${this.backgroundImageUrl}")`
-    },
     isFinished () {
       return this.finishFlag.discuss && this.finishFlag.story
     },
@@ -185,13 +188,17 @@ export default {
       this.theOpening()
       this.started = true
       setTimeout(() => {
-        this.eventExec(this.bgmEvent)
+        // this.eventExec(this.bgmEvent)
+        // this.eventPictureSide({
+        //   filepath: '1-theSnowTestament.jpg',
+        //   waiting: true
+        // })
       }, 5000)
       setTimeout(() => {
-        this.storyMessageLoad(0)
+        this.storyMessageLoad(153)
       }, 4000)
       setTimeout(() => {
-        this.discussMessageLoad(0)
+        this.discussMessageLoad(185)
         this.curtainVisible = false
       }, 6000)
     },
@@ -343,8 +350,11 @@ export default {
         case 'pic-disappear':
           this.eventPictureDisappear()
           break
-        case 'temp':
-          this.eventTemp()
+        case 'pic-side':
+          this.eventPictureSide(event.param)
+          break
+        case 'pic-side-disappear':
+          this.eventPictureSideDisappear()
           break
       }
     },
@@ -383,15 +393,17 @@ export default {
       this.sePlayer.play()
     },
     /**
-     * TODO 临时事件
+     * 边侧图片
      **/
-    eventTemp () {
-      const e = document.getElementById('theTestament')
-
-      e.style.opacity = '1'
-      setTimeout(() => {
-        e.style.opacity = '0'
-      }, 11000)
+    eventPictureSide (picture) {
+      this.pictureSide = picture
+      this.pictureSideTrigger = !this.pictureSideTrigger
+    },
+    /**
+     * 边侧消失图片
+     **/
+    eventPictureSideDisappear () {
+      this.pictureTrigger = !this.pictureTrigger
     },
     /**
      * 播放音乐
@@ -474,22 +486,14 @@ export default {
 }
 
 .main-stage {
+  position: relative;
   width: 1200px;
   height: 100%;
 }
 
-.role-image {
-  z-index: 0;
-  margin-bottom: -50px;
-  opacity: 1;
-  margin-top: 240px;
-  margin-left: -10px;
-  width: 400px;
-  height: 480px;
-}
-
 .role-dialog {
-  height: 360px;
+  bottom: -255px;
+  position: relative;
   word-break: break-all;
   font-weight: lighter;
 }
@@ -511,13 +515,11 @@ export default {
   position: absolute;
 }
 
-.the-snow-testament {
+.display-side {
   position: absolute;
-  max-height: 600px;
+  width: 480px;
+  height: 600px;
   z-index: 1;
   left: 100px;
-  opacity: 0;
-
-  transition: opacity 2s linear;
 }
 </style>

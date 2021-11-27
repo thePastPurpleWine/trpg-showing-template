@@ -1,19 +1,36 @@
 <template>
   <div>
     <audio id="dialogVoice"></audio>
-    <img style="z-index: 1;" :src="dialogImage" alt="" @load="imageReady = true">
-    <div class="name-block" v-show="imageReady">
-      <span v-show="!isSystem">{{ name }}</span>
-    </div>
-    <div id="contentBlock" :class="contentBlockClass" v-show="imageReady">
-      <span :style="{ 'color': roleConfig.color }">{{ currentContent }}</span>
-      <span id="diceSuffixText" style="opacity: 0; color: #dd0000;">{{ diceSuffix }}</span>
+    <role-image class="role-image" :role="role" @loaded="roleImageReady = true"/>
+    <div class="dialog-block">
+      <img class="dialog-image" v-show="!isKP" :src="dialogNormal" alt="" @load="dialogImageReady = true">
+      <img class="dialog-image" v-show="isKP" :src="dialogSystem" alt="" @load="dialogImageReady = true">
+
+      <div class="dialog-content-block" v-if="isKP" v-show="roleImageReady && dialogImageReady">
+        <div class="content-normal content-kp content-roll" v-if="isRoll">
+          <span>{{ currentContent }}</span>
+          <span id="diceSuffixText" :style="{ 'opacity': diceResultOpacity, 'color': '#dd0000' }">{{ diceSuffix }}</span>
+        </div>
+
+        <div class="content-normal content-kp" v-else>
+          <span :style="{ 'color': roleConfig.color }">{{ currentContent }}</span>
+        </div>
+      </div>
+
+      <div class="dialog-content-block" v-else v-show="roleImageReady && dialogImageReady">
+        <div class="name">
+          <span v-show="!isKP">{{ name }}</span>
+        </div>
+        <div class="content-normal">
+          <span :style="{ 'color': roleConfig.color }">{{ currentContent }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-const MAX_CONTENT = 92
+import RoleImage from '@/views/components/RoleImage'
 const RoleConfigMap = {
   小梺: {
     color: '#F3C800',
@@ -26,12 +43,10 @@ const RoleConfigMap = {
   大姐: {
     color: '#93B9D4',
     volume: 0.9
-
   },
   花怡: {
     color: '#E79598',
     volume: 0.9
-
   },
   桃子: {
     color: '#8B7FAB',
@@ -53,6 +68,9 @@ const RoleConfigMap = {
 
 export default {
   name: 'RoleDialog',
+  components: {
+    RoleImage
+  },
   props: {
     voiceId: {
       type: String,
@@ -61,7 +79,7 @@ export default {
     type: {
       type: String,
       validator (val) {
-        return ['dice', 'system', 'normal', undefined].includes(val)
+        return ['roll', 'kp', 'normal', undefined].includes(val)
       }
     },
     name: {
@@ -70,10 +88,7 @@ export default {
     },
     content: {
       type: String,
-      required: false,
-      validator (val) {
-        return val.length <= MAX_CONTENT
-      }
+      required: false
     },
     dice: {
       type: Object,
@@ -81,43 +96,54 @@ export default {
     },
     chapter: {
       type: String
+    },
+    role: {
+      type: String
     }
   },
   data () {
     return {
-      dialogNormal: require('@/assets/对话框.png'),
-      dialogSystem: require('@/assets/对话框-系统.png'),
+      dialogNormal: require('@/assets/system/对话框.png'),
+      dialogSystem: require('@/assets/system/对话框-系统.png'),
       currentContent: '',
       diceSuffix: '',
       audio: undefined,
-      typingEnd: false,
-      audioEnd: true,
-      imageReady: false,
-      roleConfigMap: RoleConfigMap
+      dialogImageReady: false,
+      roleImageReady: false,
+      roleConfigMap: RoleConfigMap,
+      diceAudioSrc: {
+        roll: require('@/assets/se/dice.ogg'),
+        resultNormal: require('@/assets/se/dice-normal.ogg'),
+        resultGreatSuccess: require('@/assets/se/dice-great.ogg'),
+        resultSuccess: require('@/assets/se/dice-normal.ogg'),
+        resultFail: require('@/assets/se/dice-fail.ogg'),
+        resultGreatFail: require('@/assets/se/dice-fail.ogg')
+      },
+      diceResultOpacity: '0',
+      typeStatus: {
+        ready: false,
+        typing: false,
+        typeEnd: false,
+
+        playing: false,
+        playEnd: false
+      },
+      rollStatus: {
+        ready: false,
+        rolling: false,
+        end: false
+      }
     }
   },
   computed: {
-    isDice () {
-      return this.type === 'dice'
+    isRoll () {
+      return this.type === 'roll'
     },
-    isSystem () {
-      return ['dice', 'system'].includes(this.type)
+    isKP () {
+      return ['roll', 'kp'].includes(this.type)
     },
-    contentBlockClass () {
-      let classString = 'content-block'
-      if (this.isSystem) {
-        classString += ' content-block-fix'
-      }
-      if (this.isDice) {
-        classString += ' content-block-dice-fix'
-      }
-      return classString
-    },
-    playEnd () {
-      return this.typingEnd && this.audioEnd
-    },
-    dialogImage () {
-      return this.isSystem ? this.dialogSystem : this.dialogNormal
+    playFinish () {
+      return this.typeStatus.playEnd && this.typeStatus.typeEnd && this.rollStatus.end
     },
     roleConfig () {
       if (this.roleConfigMap[this.name] === undefined) {
@@ -125,34 +151,43 @@ export default {
       } else {
         return this.roleConfigMap[this.name]
       }
+    },
+    contentReady () {
+      return this.roleImageReady && this.dialogImageReady && (this.rollStatus.ready || this.typeStatus.ready)
     }
   },
   watch: {
-    isSystem () {
-      // this.contentBlockFix()
+    contentReady (val) {
+      if (this.typeStatus.ready && val) {
+        this.typeContentNormal()
+      }
+
+      if (this.rollStatus.ready && val) {
+        this.typeContentDice()
+      }
     },
     content (val) {
-      if (val && !this.isDice) {
-        this.typeContentNormal()
-        this.playAudio()
-
-        this.typingEnd = false
-        this.audioEnd = false
+      if (val && !this.isRoll) {
+        console.log('contentChange', val)
+        this.typeStatus.ready = true
+        this.rollStatus.end = true
       }
     },
     dice (val) {
-      if (val && this.isDice) {
-        this.typeContentDice()
-
-        this.typingEnd = false
-        this.audioEnd = true
+      if (val && this.isRoll) {
+        this.rollStatus.ready = true
+        this.typeStatus.typeEnd = true
+        this.typeStatus.playEnd = true
       }
     },
-    playEnd (val) {
+    playFinish (val) {
       if (val) {
-        console.log('playEnd')
-        this.$emit('playEnd')
+        console.log('playFinish')
+        this.$emit('playFinish')
       }
+    },
+    role () {
+      this.roleImageReady = false
     }
   },
   mounted () {
@@ -165,24 +200,30 @@ export default {
     typeContentNormal () {
       this.currentContent = ''
       this.diceSuffix = ''
+      this.typeStatus.ready = false
+      this.typeStatus.typeEnd = false
 
+      this.playAudio()
       const timer = setInterval(() => {
         if (this.currentContent.length < this.content.length) {
           this.currentContent = this.content.slice(0, this.currentContent.length + 1)
+          this.typeStatus.typing = true
         } else {
+          this.typeStatus.typing = false
+          clearInterval(timer)
           // 等待阅读
           // const delay = 500 + 120 * this.currentContent.length
           setTimeout(() => {
-            this.typingEnd = true
+            this.typeStatus.typeEnd = true
           }, 1000)
-          clearInterval(timer)
         }
       }, 20)
     },
     typeContentDice () {
-      const textElement = document.getElementById('diceSuffixText')
+      this.rollStatus.ready = false
+      this.rollStatus.end = false
       // 使用透明文字占位维持布局
-      textElement.style.opacity = '0'
+      this.diceResultOpacity = '0'
       this.currentContent = ''
       this.diceSuffix = ''
 
@@ -191,75 +232,95 @@ export default {
       dice.num = dice.num === 1 ? '' : dice.num
 
       let result
-      let se
+      let seSrc
       if (dice.value >= 95) {
         result = '大失败'
-        se = 'dice-fail'
+        seSrc = this.diceAudioSrc.resultGreatFail
       } else if (dice.value > dice.check) {
         result = '失败'
-        se = 'dice-fail'
+        seSrc = this.diceAudioSrc.resultFail
       } else if (dice.value <= dice.check) {
         result = '成功'
-        se = 'dice-normal'
+        seSrc = this.diceAudioSrc.resultSuccess
       } else if (dice.value <= 5) {
         result = '大成功'
-        se = 'dice-great'
+        seSrc = this.diceAudioSrc.resultGreatSuccess
       }
 
       this.currentContent = `${dice.num}D${dice.max}(${dice.check}) = `
       this.diceSuffix = `${dice.value}（${result}）`
 
       const playDiceResult = () => {
-        this.audio.src = require('@/assets/se/' + se + '.ogg')
+        this.audio.src = seSrc
         setTimeout(() => {
-          textElement.style.opacity = '1'
-          // 移除事件防止循环
-          this.audio.removeEventListener('ended', playDiceResult)
-          this.audio.play()
-
           setTimeout(() => {
             // 阅读结束
-            this.typingEnd = true
+            this.rollStatus.end = true
           }, 1100)
+          this.diceResultOpacity = '1'
+          this.audio.removeEventListener('ended', playDiceResult)
+          this.audio.play()
         }, 600)
       }
 
       this.audio.addEventListener('ended', playDiceResult)
-      this.playDice()
-    },
-    playDice () {
-      this.audio.src = require('@/assets/se/dice.ogg')
+      this.audio.src = this.diceAudioSrc.roll
       this.audio.play()
     },
     playAudio () {
       const voiceEnd = () => {
         setTimeout(() => {
-          this.audioEnd = true
+          this.typeStatus.playEnd = true
+          this.typeStatus.playing = false
           this.audio.removeEventListener('ended', voiceEnd)
         }, 400)
       }
       const audioSrc = this.getAudioById()
       if (!audioSrc) {
-        this.audioEnd = true
+        this.typeStatus.playEnd = true
       } else {
         this.audio.addEventListener('ended', voiceEnd)
         this.audio.src = audioSrc
-        this.audio.volume = this.roleConfig.volume
+        this.audio.volume = 0.1
         this.audio.play()
+        this.typeStatus.playing = true
+        this.typeStatus.playEnd = false
       }
     }
   }
 }
 </script>
 
-<style scoped>
-.name-block {
-  position: relative;
-  top: -360px;
+<style scoped lang="less">
 
-  z-index: 1;
-  height: 88px;
-  padding: 16px 180px;
+.role-image {
+  z-index: 0;
+  margin-bottom: -50px;
+  opacity: 1;
+  margin-left: -10px;
+  width: 400px;
+  height: 480px;
+}
+
+.dialog-block {
+  position: relative;
+
+  .dialog-image {
+    width: 1200px;
+    height: 360px;
+    position: absolute;
+  }
+
+  .dialog-content-block {
+    width: 1200px;
+    height: 360px;
+    position: absolute;
+    padding: 0 160px 0 60px;
+  }
+}
+
+.name {
+  padding: 16px 130px;
   line-height: 56px;
   font-size: 56px;
   color: black;
@@ -268,25 +329,20 @@ export default {
   font-family: '萝莉体', serif;
 }
 
-.content-block {
-  position: relative;
-  top: -360px;
-
-  z-index: 1;
-  padding: 0 160px 0 60px;
+.content-normal {
   font-size: 40px;
-  color: #E9A92D;
   font-family: '华康少女字体', serif;
 }
 
-.content-block-fix {
-  margin-top: -20px;
+.content-kp {
+  margin-top: 64px;
 }
 
-.content-block-dice-fix {
+.content-roll {
   text-align: center;
   font-size: 60px;
   color: black;
   font-weight:bold
 }
+
 </style>
