@@ -1,6 +1,6 @@
 <template>
   <div>
-    <img id="image" class="picture" :src="imageSrc" alt="">
+    <img :style="{ 'opacity': opacity }" class="display-picture" :src="imageSrc" alt="">
   </div>
 </template>
 
@@ -16,15 +16,8 @@ export default {
   data () {
     return {
       imageSrc: undefined,
-      imageVisible: false
-    }
-  },
-  computed: {
-    element () {
-      return document.getElementById('image')
-    },
-    elementStyle () {
-      return this.element.style
+      imageVisible: false,
+      opacity: '0'
     }
   },
   watch: {
@@ -47,10 +40,10 @@ export default {
   methods: {
     fadeIn () {
       this.imageVisible = true
-      this.elementStyle.opacity = '1'
+      this.opacity = '1'
     },
     fadeOut () {
-      this.elementStyle.opacity = '0'
+      this.opacity = '0'
       this.imageVisible = false
     }
   }
@@ -58,10 +51,7 @@ export default {
 </script>
 
 <style scoped>
-.display {
-  display: flex;
-}
-.picture {
+.display-picture {
   opacity: 0;
   max-width: 100%;
   max-height: 100%;

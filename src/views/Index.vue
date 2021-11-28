@@ -35,7 +35,7 @@
                    :content="nowStoryMassage.content"
                    :dice="nowStoryMassage.dice"
                    :role="nowStoryMassage.role"
-                   chapter="1"
+                   chapter="2"
                    @playFinish="storyMessageExecEnd"
       />
     </div>
@@ -44,12 +44,13 @@
 </template>
 <script>
 import ChattingItem from '@/views/components/ChattingItem'
-import DiscussEvent from '@/assets/play/1-discuss-event.json'
-import StoryEvent from '@/assets/play/1-story-event.json'
-import DiscussPlay from '@/assets/play/1-discuss.json'
-import StoryPlay from '@/assets/play/1-story.json'
+import DiscussEvent from '@/assets/play/2-discuss-event.json'
+import StoryEvent from '@/assets/play/2-story-event.json'
+import DiscussPlay from '@/assets/play/2-discuss.json'
+import StoryPlay from '@/assets/play/2-story.json'
 import RoleDialog from '@/views/components/RoleDialog'
 import Display from '@/views/components/Display'
+import $ from 'jquery'
 
 export default {
   name: 'Index',
@@ -86,21 +87,17 @@ export default {
       },
       pictureSideTrigger: false,
       bgmEvent: {
-        type: 'bgm',
+        type: 'bgm-list',
         // param: [
         //   '0-ハッピー☆マテリアル(Acoustic Version).mp3',
         //   '0-Island Fortress.mp3',
         //   '0-Beautiful Morning.mp3'
         // ]
         param: [
-          '1-消沈.mp3',
-          '1-WS Town.mp3',
-          '1-33.mp3',
-          '1-ED6518.mp3',
-          '1-冰之女王.mp3',
-          '1-可靠的女人.mp3',
-          '1-Nicedesuyo.mp3',
-          '1-Konata no Theme.mp3'
+          '2-甲論乙駁.mp3',
+          '2-Postmeridie.mp3',
+          '2-牧场物语开场音乐.mp3',
+          '2-小麦粉と卵とミルク.mp3'
         ]
       },
       // 讨论信息列表
@@ -135,7 +132,10 @@ export default {
         bgm: false,
         discuss: false,
         story: false
-      }
+      },
+      // ====================
+      cache1: require('@/assets/background/湖边.png'),
+      cache2: require('@/assets/background/后山.png')
     }
   },
   computed: {
@@ -147,7 +147,7 @@ export default {
     }
   },
   mounted () {
-    this.eventBackground('宿舍.png')
+    this.eventBackground('公园.png')
     const curtainElement = document.getElementById('curtain')
     curtainElement.style.opacity = '1'
     this.bgmPlayer = document.getElementById('bgm')
@@ -187,20 +187,20 @@ export default {
 
       this.theOpening()
       this.started = true
+      // this.eventBgm({
+      //   filename: '2-モノミ先生の教育実習.mp3',
+      //   volume: 0.23
+      // })
       setTimeout(() => {
-        // this.eventExec(this.bgmEvent)
-        // this.eventPictureSide({
-        //   filepath: '1-theSnowTestament.jpg',
-        //   waiting: true
-        // })
-      }, 5000)
+        this.storyMessageLoad(0)
+      }, 3000)
       setTimeout(() => {
-        this.storyMessageLoad(153)
+        this.eventExec(this.bgmEvent)
       }, 4000)
       setTimeout(() => {
-        this.discussMessageLoad(185)
+        this.discussMessageLoad(0)
         this.curtainVisible = false
-      }, 6000)
+      }, 7000)
     },
     /**
      * 开幕
@@ -218,7 +218,7 @@ export default {
       setTimeout(() => {
         const curtainElement = document.getElementById('curtain')
         curtainElement.style.opacity = '1'
-      }, 2000)
+      }, 1000)
     },
     /**
      * 讨论消息加载
@@ -338,8 +338,14 @@ export default {
         case 'bg':
           this.eventBackground(event.param)
           break
+        case 'bgm-list':
+          this.eventBgmList(event.param)
+          break
         case 'bgm':
-          this.eventBGM(event.param)
+          this.eventBgm(event.param)
+          break
+        case 'bgm-out':
+          this.eventBgmOut()
           break
         case 'se':
           this.eventSE(event.param)
@@ -403,17 +409,34 @@ export default {
      * 边侧消失图片
      **/
     eventPictureSideDisappear () {
-      this.pictureTrigger = !this.pictureTrigger
+      this.pictureSideTrigger = !this.pictureSideTrigger
+    },
+    /**
+     * 播放音乐
+     * @param event 音乐事件
+     **/
+    eventBgm (event) {
+      const { filename, volume } = event
+      this.bgmPlayer.pause()
+      this.bgmPlayer.src = require('@/assets/bgm/' + filename)
+      this.bgmPlayer.volume = volume
+      this.bgmPlayer.play()
+    },
+    /**
+     * 淡出音乐
+     **/
+    eventBgmOut () {
+      $('#bgm').animate({ volume: 0 }, 3000)
     },
     /**
      * 播放音乐
      * @param bgmList 音乐文件名列表
      **/
-    eventBGM (bgmList) {
+    eventBgmList (bgmList) {
       let index = 0
 
       const interval = () => {
-        setTimeout(() => playBgm(), 9000)
+        setTimeout(() => playBgm(), 10000)
       }
 
       const playBgm = () => {

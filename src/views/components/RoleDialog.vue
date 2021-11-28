@@ -63,6 +63,10 @@ const RoleConfigMap = {
   小黑: {
     color: '#7D005B',
     volume: 0.9
+  },
+  晓磊: {
+    color: '#5DA4CD',
+    volume: 0.9
   }
 }
 
@@ -239,12 +243,12 @@ export default {
       } else if (dice.value > dice.check) {
         result = '失败'
         seSrc = this.diceAudioSrc.resultFail
-      } else if (dice.value <= dice.check) {
-        result = '成功'
-        seSrc = this.diceAudioSrc.resultSuccess
       } else if (dice.value <= 5) {
         result = '大成功'
         seSrc = this.diceAudioSrc.resultGreatSuccess
+      } else if (dice.value <= dice.check) {
+        result = '成功'
+        seSrc = this.diceAudioSrc.resultSuccess
       }
 
       this.currentContent = `${dice.num}D${dice.max}(${dice.check}) = `
@@ -281,10 +285,15 @@ export default {
       } else {
         this.audio.addEventListener('ended', voiceEnd)
         this.audio.src = audioSrc
-        this.audio.volume = 0.1
-        this.audio.play()
-        this.typeStatus.playing = true
-        this.typeStatus.playEnd = false
+        this.audio.volume = this.roleConfig.volume
+        try {
+          this.audio.play()
+          this.typeStatus.playing = true
+          this.typeStatus.playEnd = false
+        } catch (e) {
+          console.error(e)
+          this.typeStatus.playEnd = true
+        }
       }
     }
   }

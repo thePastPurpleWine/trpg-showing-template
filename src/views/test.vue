@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import DiscussPlay from '@/assets/play/1-story.json'
+import DiscussPlay from '@/assets/play/2-discuss.json'
 export default {
   name: 'test',
   data () {
