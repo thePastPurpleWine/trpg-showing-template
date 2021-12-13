@@ -1,5 +1,5 @@
 <template>
-  <div :class="this.isContinuous ? 'message-continuous' : 'message-first'">
+  <div v-if="isMount" :class="this.isContinuous ? 'message-continuous' : 'message-first'">
     <a-row v-if="type === TYPE_LEFT" class="message-item-left" type="flex" v-show="allReady">
       <div class="head-block">
         <img v-if="!isContinuous" :src="headImg" alt="" @load="headImgReady = true">
@@ -87,6 +87,9 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    isMount: {
+      type: Boolean
     }
   },
   data () {

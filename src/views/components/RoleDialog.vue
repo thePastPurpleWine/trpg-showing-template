@@ -1,7 +1,7 @@
 <template>
   <div>
     <audio id="dialogVoice"></audio>
-    <role-image class="role-image" :role="role" @loaded="roleImageReady = true"/>
+    <role-image class="role-image" :role="role" :next-role="nextRole" @loaded="roleImageReady = true"/>
     <div class="dialog-block">
       <img class="dialog-image" v-show="!isKP" :src="dialogNormal" alt="" @load="dialogImageReady = true">
       <img class="dialog-image" v-show="isKP" :src="dialogSystem" alt="" @load="dialogImageReady = true">
@@ -31,44 +31,7 @@
 
 <script>
 import RoleImage from '@/views/components/RoleImage'
-const RoleConfigMap = {
-  小梺: {
-    color: '#F3C800',
-    volume: 0.9
-  },
-  谢拉: {
-    color: '#2B2B2F',
-    volume: 0.9
-  },
-  大姐: {
-    color: '#93B9D4',
-    volume: 0.9
-  },
-  花怡: {
-    color: '#E79598',
-    volume: 0.9
-  },
-  桃子: {
-    color: '#8B7FAB',
-    volume: 1
-  },
-  阿娟: {
-    color: '#F399E3',
-    volume: 0.9
-  },
-  小猴: {
-    color: '#8B5900',
-    volume: 0.9
-  },
-  小黑: {
-    color: '#7D005B',
-    volume: 0.9
-  },
-  晓磊: {
-    color: '#5DA4CD',
-    volume: 0.9
-  }
-}
+import RoleConfig from '@/assets/play/RoleConfig.json'
 
 export default {
   name: 'RoleDialog',
@@ -103,6 +66,9 @@ export default {
     },
     role: {
       type: String
+    },
+    nextRole: {
+      type: String
     }
   },
   data () {
@@ -114,14 +80,15 @@ export default {
       audio: undefined,
       dialogImageReady: false,
       roleImageReady: false,
-      roleConfigMap: RoleConfigMap,
+      roleConfigMap: RoleConfig,
       diceAudioSrc: {
         roll: require('@/assets/se/dice.ogg'),
         resultNormal: require('@/assets/se/dice-normal.ogg'),
         resultGreatSuccess: require('@/assets/se/dice-great.ogg'),
         resultSuccess: require('@/assets/se/dice-normal.ogg'),
         resultFail: require('@/assets/se/dice-fail.ogg'),
-        resultGreatFail: require('@/assets/se/dice-fail.ogg')
+        resultGreatFail: require('@/assets/se/dice-fail.ogg'),
+        resultUnknown: require('@/assets/se/dice-unknown.ogg')
       },
       diceResultOpacity: '0',
       typeStatus: {
@@ -151,7 +118,7 @@ export default {
     },
     roleConfig () {
       if (this.roleConfigMap[this.name] === undefined) {
-        return {}
+        return this.roleConfigMap.default
       } else {
         return this.roleConfigMap[this.name]
       }
@@ -186,7 +153,6 @@ export default {
     },
     playFinish (val) {
       if (val) {
-        console.log('playFinish')
         this.$emit('playFinish')
       }
     },
@@ -232,27 +198,50 @@ export default {
       this.diceSuffix = ''
 
       const dice = this.dice
+      const unknown = !dice.check || dice.value === 0
       // 1D??? 时，1不显示
-      dice.num = dice.num === 1 ? '' : dice.num
+      if (dice.num === 1) {
+        dice.num = ''
+      }
 
-      let result
-      let seSrc
+      let result = ''
+      let seSrc = ''
       if (dice.value >= 95) {
-        result = '大失败'
+        result = '（大失败）'
         seSrc = this.diceAudioSrc.resultGreatFail
       } else if (dice.value > dice.check) {
-        result = '失败'
+        result = '（失败）'
         seSrc = this.diceAudioSrc.resultFail
       } else if (dice.value <= 5) {
-        result = '大成功'
+        result = '（大成功）'
         seSrc = this.diceAudioSrc.resultGreatSuccess
       } else if (dice.value <= dice.check) {
-        result = '成功'
+        result = '（成功）'
         seSrc = this.diceAudioSrc.resultSuccess
       }
 
-      this.currentContent = `${dice.num}D${dice.max}(${dice.check}) = `
-      this.diceSuffix = `${dice.value}（${result}）`
+      if (unknown) {
+        result = ''
+        seSrc = this.diceAudioSrc.resultUnknown
+      }
+
+      if (dice.max === 0) {
+        dice.max = '??'
+      }
+
+      let check
+      if (!dice.check) {
+        check = ''
+      } else {
+        check = `(${dice.check})`
+      }
+
+      if (dice.value === 0) {
+        dice.value = '??'
+      }
+
+      this.currentContent = `${dice.project} : ${dice.num}D${dice.max}${check} = `
+      this.diceSuffix = `${dice.value}${result}`
 
       const playDiceResult = () => {
         this.audio.src = seSrc
@@ -263,6 +252,7 @@ export default {
           }, 1100)
           this.diceResultOpacity = '1'
           this.audio.removeEventListener('ended', playDiceResult)
+
           this.audio.play()
         }, 600)
       }

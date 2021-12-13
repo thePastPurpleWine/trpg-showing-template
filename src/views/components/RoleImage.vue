@@ -8,22 +8,20 @@
 export default {
   name: 'RoleImage',
   props: {
-    role: String
+    role: String,
+    nextRole: String
   },
   data () {
     return {
       element: undefined,
-      roleImageSrc: ''
-    }
-  },
-  computed: {
-    elementStyle () {
-      return this.element.style
+      roleImageSrc: '',
+      nextRoleSrc: '',
+      preloadRoleDict: {}
     }
   },
   mounted () {
     this.element = document.getElementById('role')
-    this.preload()
+    // this.preload()
   },
   watch: {
     role (val) {
@@ -35,6 +33,16 @@ export default {
       } else {
         this.roleImageSrc = ''
       }
+    },
+    nextRole (val) {
+      if (val) {
+        const role = val.split('-')[0]
+        const image = role + '-' + val.split('-')[1] + '.png'
+
+        this.nextRoleSrc = require('@/assets/role/' + role + '/' + image)
+      } else {
+        this.nextRoleSrc = ''
+      }
     }
   },
   methods: {
@@ -45,7 +53,7 @@ export default {
       const roleList = ['aj', 'dj', 'hy', 'tz', 'xx']
       for (const role of roleList) {
         for (const i in 9) {
-          new Image().src = require('@/assets/role/' + role + '/' + role + '-' + i + '.png')
+          this.preloadRoleDict[role + '-' + i] = require('@/assets/role/' + role + '/' + role + '-' + i + '.png')
         }
       }
     }

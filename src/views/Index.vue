@@ -2,15 +2,11 @@
   <div id="main" class="main">
     <audio id="bgm" muted></audio>
     <audio id="se" muted></audio>
-    <display class="display-side"
-             :filepath="pictureSide.filepath"
-             :duration="pictureSide.duration"
-             :waiting="pictureSide.waiting"
-             :trigger="pictureSideTrigger"/>
+    <display ref="pic-side" class="display-side"/>
     <div class="chatting-window">
       <div class="placeholder-top"/>
-      <chatting-item v-for="(item, index) in chattingItemList"
-                     :key="index"
+      <chatting-item v-for="(item) in chattingItemList"
+                     :key="item.index"
                      :id="'chatting-item-' + item.index"
                      :head="item.head"
                      :nickname="item.nickname"
@@ -18,15 +14,13 @@
                      :type="item.type"
                      :is-continuous="item.isContinuous"
                      :picture="item.picture"
+                     :is-mount="item.index > mountedItemCount - 15"
                      @mounted="discussMessageExecEnd(item.index)"
       />
     </div>
     <div class="main-stage">
-      <display class="display"
-               :filepath="picture.filepath"
-               :duration="picture.duration"
-               :waiting="picture.waiting"
-               :trigger="pictureTrigger"/>
+      <display ref="pic" class="display"/>
+      <display-status ref="pic-status" class="display-status"/>
       <role-dialog class="role-dialog"
                    v-show="nowStoryMassage.id"
                    :voiceId="nowStoryMassage.voiceId"
@@ -35,7 +29,8 @@
                    :content="nowStoryMassage.content"
                    :dice="nowStoryMassage.dice"
                    :role="nowStoryMassage.role"
-                   chapter="2"
+                   :next-role="nextStoryMassage.role"
+                   chapter="4"
                    @playFinish="storyMessageExecEnd"
       />
     </div>
@@ -44,12 +39,13 @@
 </template>
 <script>
 import ChattingItem from '@/views/components/ChattingItem'
-import DiscussEvent from '@/assets/play/2-discuss-event.json'
-import StoryEvent from '@/assets/play/2-story-event.json'
-import DiscussPlay from '@/assets/play/2-discuss.json'
-import StoryPlay from '@/assets/play/2-story.json'
+import DiscussEvent from '@/assets/play/4-discuss-event.json'
+import StoryEvent from '@/assets/play/4-story-event.json'
+import DiscussPlay from '@/assets/play/4-discuss.json'
+import StoryPlay from '@/assets/play/4-story.json'
 import RoleDialog from '@/views/components/RoleDialog'
 import Display from '@/views/components/Display'
+import DisplayStatus from '@/views/components/DisplayStatus'
 import $ from 'jquery'
 
 export default {
@@ -57,49 +53,17 @@ export default {
   components: {
     ChattingItem,
     RoleDialog,
-    Display
+    Display,
+    DisplayStatus
   },
   data () {
     return {
       started: false,
       curtainVisible: true,
       chattingItemList: [],
-      storyMassage: {
-        id: '',
-        isSystem: false,
-        name: '谢拉',
-        content: '故事的起因，是宿舍中的谢拉被人杀害，死因、其他线索以及公园湖边的案发地点一概被警察封锁了',
-        voice: '',
-        delay: 500
-      },
+      mountedItemCount: 0,
       bgmPlayer: undefined,
       sePlayer: undefined,
-      picture: {
-        filepath: undefined,
-        waiting: false,
-        duration: undefined
-      },
-      pictureTrigger: false,
-      pictureSide: {
-        filepath: undefined,
-        waiting: false,
-        duration: undefined
-      },
-      pictureSideTrigger: false,
-      bgmEvent: {
-        type: 'bgm-list',
-        // param: [
-        //   '0-ハッピー☆マテリアル(Acoustic Version).mp3',
-        //   '0-Island Fortress.mp3',
-        //   '0-Beautiful Morning.mp3'
-        // ]
-        param: [
-          '2-甲論乙駁.mp3',
-          '2-Postmeridie.mp3',
-          '2-牧场物语开场音乐.mp3',
-          '2-小麦粉と卵とミルク.mp3'
-        ]
-      },
       // 讨论信息列表
       discussMsgList: DiscussPlay,
       // 故事信息列表
@@ -110,7 +74,7 @@ export default {
       storyEventMap: StoryEvent,
       nextDiscussMassage: undefined,
       nowDiscussMassage: undefined,
-      nextStoryMassage: undefined,
+      nextStoryMassage: {},
       nowStoryMassage: {},
       // 节点同步参数
       waitingDiscuss: undefined,
@@ -127,15 +91,14 @@ export default {
         triggerId: String // 触发id
         // other
       },
-      nowChattingItemMounted: false,
       finishFlag: {
         bgm: false,
         discuss: false,
         story: false
       },
       // ====================
-      cache1: require('@/assets/background/湖边.png'),
-      cache2: require('@/assets/background/后山.png')
+      cache1: undefined,
+      cache2: undefined
     }
   },
   computed: {
@@ -144,10 +107,18 @@ export default {
     },
     allWaiting () {
       return this.waitingDiscuss && this.waitingStory
+    },
+    currentChattingItemList () {
+      const length = this.chattingItemList.length
+      if (length <= 10) {
+        return this.chattingItemList
+      } else {
+        return this.chattingItemList.slice(length - 10)
+      }
     }
   },
   mounted () {
-    this.eventBackground('公园.png')
+    this.eventBackground('酒吧.png')
     const curtainElement = document.getElementById('curtain')
     curtainElement.style.opacity = '1'
     this.bgmPlayer = document.getElementById('bgm')
@@ -187,20 +158,18 @@ export default {
 
       this.theOpening()
       this.started = true
-      // this.eventBgm({
-      //   filename: '2-モノミ先生の教育実習.mp3',
-      //   volume: 0.23
-      // })
+      this.finishFlag = {
+        bgm: false,
+        discuss: false,
+        story: false
+      }
       setTimeout(() => {
         this.storyMessageLoad(0)
       }, 3000)
       setTimeout(() => {
-        this.eventExec(this.bgmEvent)
-      }, 4000)
-      setTimeout(() => {
         this.discussMessageLoad(0)
         this.curtainVisible = false
-      }, 7000)
+      }, 3000)
     },
     /**
      * 开幕
@@ -219,6 +188,19 @@ export default {
         const curtainElement = document.getElementById('curtain')
         curtainElement.style.opacity = '1'
       }, 1000)
+      setTimeout(() => {
+        // 重置
+        this.started = false
+        this.eventBackground('公园.png')
+        this.chattingItemList = []
+        this.mountedItemCount = 0
+        this.nextDiscussMassage = undefined
+        this.nowDiscussMassage = undefined
+        this.nextStoryMassage = {}
+        this.nowStoryMassage = {}
+        this.waitingDiscuss = undefined
+        this.waitingStory = undefined
+      }, 4000)
     },
     /**
      * 讨论消息加载
@@ -261,6 +243,7 @@ export default {
       theLastItem.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
       // 阅读等待
       setTimeout(() => {
+        this.mountedItemCount++
         this.discussMessageLoad(this.nowDiscussMassage.index + 1)
       }, this.nowDiscussMassage.delay)
     },
@@ -285,7 +268,12 @@ export default {
         return
       }
 
+      if (!this.storyMsgList[index]) {
+        this.storyMessageLoad(index + 1)
+        return
+      }
       this.nextStoryMassage = this.storyMsgList[index]
+
       // 生产声音文件名
       function prefixZero (num, n) {
         return (Array(n).join(0) + num).slice(-n)
@@ -362,6 +350,12 @@ export default {
         case 'pic-side-disappear':
           this.eventPictureSideDisappear()
           break
+        case 'pic-status':
+          this.eventPictureStatus(event.param)
+          break
+        case 'pic-status-disappear':
+          this.eventPictureStatusDisappear()
+          break
       }
     },
     /**
@@ -381,35 +375,45 @@ export default {
      * @param picture 图片事件参数
      **/
     eventPicture (picture) {
-      this.picture = picture
-      this.pictureTrigger = !this.pictureTrigger
+      this.$refs.pic.showImage(picture)
     },
     /**
      * 消失图片
      **/
     eventPictureDisappear () {
-      this.pictureTrigger = !this.pictureTrigger
+      this.$refs.pic.hideImage()
     },
     /**
      * 播放音效
      * @param se 音效文件名
      **/
     eventSE (se) {
-      this.sePlayer.src = require('@/assets/se/' + se + '.ogg')
+      this.sePlayer.src = require('@/assets/se/' + se)
       this.sePlayer.play()
     },
     /**
      * 边侧图片
      **/
     eventPictureSide (picture) {
-      this.pictureSide = picture
-      this.pictureSideTrigger = !this.pictureSideTrigger
+      this.$refs['pic-side'].showImage(picture)
     },
     /**
      * 边侧消失图片
      **/
     eventPictureSideDisappear () {
-      this.pictureSideTrigger = !this.pictureSideTrigger
+      this.$refs['pic-side'].hideImage()
+    },
+    /**
+     * 状态图片
+     **/
+    eventPictureStatus (picture) {
+      this.$refs['pic-status'].showImage(picture)
+    },
+    /**
+     * 状态消失图片
+     **/
+    eventPictureStatusDisappear () {
+      this.$refs['pic-status'].hideImage()
     },
     /**
      * 播放音乐
@@ -426,7 +430,7 @@ export default {
      * 淡出音乐
      **/
     eventBgmOut () {
-      $('#bgm').animate({ volume: 0 }, 3000)
+      $('#bgm').animate({ volume: 0 }, 5000)
     },
     /**
      * 播放音乐
@@ -468,8 +472,8 @@ export default {
 </script>
 <style lang="less" scoped>
 .curtain {
-  width: 100%;
-  height: 100%;
+  width: 1920px;
+  height: 1080px;
   position: absolute;
   background: black;
   margin-top: -20px;
@@ -532,16 +536,25 @@ export default {
 // 正剧
 .display {
   width: 920px;
-  height: 600px;
+  height: 540px;
   margin-top: 30px;
   margin-left: 300px;
   position: absolute;
 }
 
+.display-status {
+  width: 900px;
+  height: 80px;
+  margin-top: 580px;
+  margin-left: 320px;
+  position: absolute;
+  z-index: 1;
+}
+
 .display-side {
   position: absolute;
-  width: 480px;
-  height: 600px;
+  width: 460px;
+  height: 410px;
   z-index: 1;
   left: 100px;
 }
