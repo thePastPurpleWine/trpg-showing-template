@@ -69,6 +69,9 @@ export default {
     },
     nextRole: {
       type: String
+    },
+    delay: {
+      type: Number
     }
   },
   data () {
@@ -182,10 +185,9 @@ export default {
           this.typeStatus.typing = false
           clearInterval(timer)
           // 等待阅读
-          // const delay = 500 + 120 * this.currentContent.length
           setTimeout(() => {
             this.typeStatus.typeEnd = true
-          }, 1000)
+          }, this.delay)
         }
       }, 20)
     },
@@ -319,7 +321,7 @@ export default {
 }
 
 .name {
-  padding: 16px 130px;
+  padding: 16px 120px;
   line-height: 56px;
   font-size: 56px;
   color: black;

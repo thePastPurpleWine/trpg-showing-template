@@ -20,7 +20,7 @@
     </div>
     <div class="main-stage">
       <display ref="pic" class="display"/>
-      <display-status ref="pic-status" class="display-status"/>
+      <display ref="pic-status" class="display-status"/>
       <role-dialog class="role-dialog"
                    v-show="nowStoryMassage.id"
                    :voiceId="nowStoryMassage.voiceId"
@@ -30,7 +30,7 @@
                    :dice="nowStoryMassage.dice"
                    :role="nowStoryMassage.role"
                    :next-role="nextStoryMassage.role"
-                   chapter="4"
+                   chapter="6"
                    @playFinish="storyMessageExecEnd"
       />
     </div>
@@ -39,13 +39,12 @@
 </template>
 <script>
 import ChattingItem from '@/views/components/ChattingItem'
-import DiscussEvent from '@/assets/play/4-discuss-event.json'
-import StoryEvent from '@/assets/play/4-story-event.json'
-import DiscussPlay from '@/assets/play/4-discuss.json'
-import StoryPlay from '@/assets/play/4-story.json'
+import DiscussEvent from '@/assets/play/6-discuss-event.json'
+import StoryEvent from '@/assets/play/6-story-event.json'
+import DiscussPlay from '@/assets/play/6-discuss.json'
+import StoryPlay from '@/assets/play/6-story.json'
 import RoleDialog from '@/views/components/RoleDialog'
 import Display from '@/views/components/Display'
-import DisplayStatus from '@/views/components/DisplayStatus'
 import $ from 'jquery'
 
 export default {
@@ -53,8 +52,7 @@ export default {
   components: {
     ChattingItem,
     RoleDialog,
-    Display,
-    DisplayStatus
+    Display
   },
   data () {
     return {
@@ -95,10 +93,7 @@ export default {
         bgm: false,
         discuss: false,
         story: false
-      },
-      // ====================
-      cache1: undefined,
-      cache2: undefined
+      }
     }
   },
   computed: {
@@ -118,7 +113,7 @@ export default {
     }
   },
   mounted () {
-    this.eventBackground('酒吧.png')
+    this.eventBackground('black.png')
     const curtainElement = document.getElementById('curtain')
     curtainElement.style.opacity = '1'
     this.bgmPlayer = document.getElementById('bgm')
@@ -164,7 +159,7 @@ export default {
         story: false
       }
       setTimeout(() => {
-        this.storyMessageLoad(0)
+        this.storyMessageLoad(2)
       }, 3000)
       setTimeout(() => {
         this.discussMessageLoad(0)
@@ -183,24 +178,23 @@ export default {
      * 闭幕
      **/
     theConcluding () {
+      this.eventBgmOut()
       this.curtainVisible = true
       setTimeout(() => {
         const curtainElement = document.getElementById('curtain')
         curtainElement.style.opacity = '1'
       }, 1000)
       setTimeout(() => {
-        // 重置
+        const mainElement = document.getElementById('main')
+        mainElement.style.transition = 'background-image 0s linear'
+        this.eventBackground('Fin.png')
         this.started = false
-        this.eventBackground('公园.png')
-        this.chattingItemList = []
-        this.mountedItemCount = 0
-        this.nextDiscussMassage = undefined
-        this.nowDiscussMassage = undefined
-        this.nextStoryMassage = {}
-        this.nowStoryMassage = {}
-        this.waitingDiscuss = undefined
-        this.waitingStory = undefined
-      }, 4000)
+      }, 3000)
+      setTimeout(() => {
+        const curtainElement = document.getElementById('curtain')
+        curtainElement.style.transition = 'opacity 4s linear'
+        curtainElement.style.opacity = '0'
+      }, 3500)
     },
     /**
      * 讨论消息加载
@@ -304,7 +298,6 @@ export default {
       setTimeout(() => {
         this.storyMessageLoad(this.nowStoryMassage.index + 1)
       }, 0)
-      // }, this.nowStoryMassage.delay)
     },
     /**
      * 故事事件加载
@@ -321,6 +314,7 @@ export default {
      * 事件执行
      **/
     eventExec (event) {
+      console.log(event.type, event.param)
       // 执行事件
       switch (event.type) {
         case 'bg':
@@ -367,8 +361,12 @@ export default {
      **/
     eventBackground (imagePath) {
       const mainDiv = document.getElementById('main')
+      const img = new Image()
       const src = require('@/assets/background/' + imagePath)
-      mainDiv.style.backgroundImage = 'url(' + src + ')'
+      img.src = src
+      img.onload = () => {
+        mainDiv.style.backgroundImage = 'url(' + src + ')'
+      }
     },
     /**
      * 展示图片
@@ -451,15 +449,6 @@ export default {
         }
 
         this.bgmPlayer.src = require('@/assets/bgm/' + bgmList[index])
-        if (bgmList[index] === '1-33.mp3') {
-          this.bgmPlayer.volume = 0.15
-        } else if (bgmList[index] === '1-消沈.mp3') {
-          this.bgmPlayer.volume = 0.4
-        } else if (bgmList[index] === '1-可靠的女人.mp3') {
-          this.bgmPlayer.volume = 0.2
-        } else {
-          this.bgmPlayer.volume = 0.25
-        }
         this.bgmPlayer.play()
         index++
       }
@@ -488,6 +477,7 @@ export default {
   width: 1920px;
   height: 1080px;
   display: flex;
+  background-color: black;
 
   padding: @padding-size 0;
   transition: background-image 2s linear;

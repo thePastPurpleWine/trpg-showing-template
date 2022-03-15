@@ -3,12 +3,12 @@
 </template>
 
 <script>
-import DiscussPlay from '@/assets/play/2-discuss.json'
+import StoryPlay from '@/assets/play/6-story.json'
 export default {
   name: 'test',
   data () {
     return {
-      chapterStart: DiscussPlay,
+      chapterStart: StoryPlay,
       formatList: []
     }
   },
