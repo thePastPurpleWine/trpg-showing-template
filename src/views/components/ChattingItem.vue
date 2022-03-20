@@ -1,8 +1,13 @@
 <template>
   <div v-if="isMount" :class="this.isContinuous ? 'message-continuous' : 'message-first'">
-    <a-row v-if="type === TYPE_LEFT" class="message-item-left" type="flex" v-show="allReady">
+    <a-row class="message-item-info" v-if="isRevoke" type="flex" justify="center">
+      <a-row class="message-bubble">
+        <span v-if="pictureReady">{{ nickname }}撤回了一条消息</span>
+      </a-row>
+    </a-row>
+    <a-row class="message-item-left" v-else-if="isNormal" type="flex" v-show="allReady">
       <div class="head-block">
-        <img v-if="!isContinuous" :src="headImg" alt="" @load="headImgReady = true">
+        <img v-if="!isContinuous" :src="avatarImage" alt="" @load="avatarImageReady = true">
         <div v-else class="placeholder-block"/>
       </div>
 
@@ -12,12 +17,18 @@
         </a-row>
 
         <a-row class="message-bubble">
-          <img v-if="pictureSrc" :src="pictureSrc" @load="pictureReady = true">
+          <img v-if="pictureSrc" :src="pictureSrc" @load="pictureReady = true" alt="">
           <span v-if="pictureReady">{{ content }}</span>
         </a-row>
       </div>
 
 <!--      <div class="placeholder-block"/>-->
+    </a-row>
+
+    <a-row class="message-item-info" v-else-if="isInfo" type="flex" justify="center">
+      <a-row class="message-bubble">
+        <span v-if="pictureReady">{{ content }}</span>
+      </a-row>
     </a-row>
 
 <!--    <a-row v-else-if="type === TYPE_RIGHT" class="message-item-right" type="flex" justify="end">-->
@@ -42,16 +53,11 @@
 </template>
 
 <script>
-import chatImagesDict from '@/assets/images/chatImagesDict.js'
-
-const TYPE_LEFT = 'left'
-const TYPE_RIGHT = 'right'
-const TYPE_INFO = 'info'
 
 export default {
   name: 'ChattingItem',
   props: {
-    head: {
+    avatar: {
       type: String,
       required: false,
       default: undefined
@@ -80,7 +86,7 @@ export default {
       type: String,
       required: true,
       validator: (val) => {
-        return val === TYPE_INFO || val === TYPE_RIGHT || val === TYPE_LEFT
+        return val === 'normal' || val === 'info'
       }
     },
     isContinuous: {
@@ -94,36 +100,36 @@ export default {
   },
   data () {
     return {
-      TYPE_LEFT,
-      TYPE_RIGHT,
-      TYPE_INFO,
-
-      headImg: undefined,
+      avatarImage: undefined,
       mountedReady: false,
       pictureReady: false,
-      headImgReady: false,
-      pictureSrc: undefined
+      avatarImageReady: false,
+      pictureSrc: undefined,
+      isRevoke: false
     }
   },
   created () {
     if (!this.isContinuous) {
-      this.headImg = require(`@/assets/headImages/${this.head}`)
+      this.avatarImage = require(`@/assets/avatar/${this.avatar}`)
     } else {
-      this.headImgReady = true
+      this.avatarImageReady = true
     }
 
     if (this.picture) {
-      this.pictureSrc = chatImagesDict.get(this.picture)
-      if (this.pictureSrc === undefined) {
-        this.pictureSrc = require('@/assets/images/' + this.picture + '.png')
-      }
+      this.pictureSrc = require('@/assets/discussImages/' + this.picture)
     } else {
       this.pictureReady = true
     }
   },
   computed: {
     allReady () {
-      return this.mountedReady && this.pictureReady && this.headImgReady
+      return this.mountedReady && this.pictureReady && this.avatarImageReady
+    },
+    isNormal () {
+      return this.type === 'normal'
+    },
+    isInfo () {
+      return this.type === 'info'
     }
   },
   watch: {
@@ -137,6 +143,17 @@ export default {
   },
   mounted () {
     this.mountedReady = true
+
+    if (this.isInfo) {
+      setTimeout(() => {
+        this.$emit('mounted')
+      }, 100)
+    }
+  },
+  methods: {
+    revoke () {
+      this.isRevoke = true
+    }
   }
 }
 </script>
@@ -206,6 +223,23 @@ export default {
   .placeholder-block {
     width: @head-size;
     height: 100%;
+  }
+}
+
+.message-item-info {
+  margin-top: 20px;
+  margin-bottom: 40px;
+  width: 100%;
+
+  .message-bubble {
+    margin-left: -20px;
+    border-radius: 12px;
+    background-color: #D9DADC;
+    color: #777777;
+    font-size: 18px;
+    line-height: 30px;
+    padding: 0 8px;
+    font-family: '微软雅黑', serif;
   }
 }
 

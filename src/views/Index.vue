@@ -8,13 +8,14 @@
       <chatting-item v-for="(item) in chattingItemList"
                      :key="item.index"
                      :id="'chatting-item-' + item.index"
-                     :head="item.head"
+                     :ref="'chatting-item-' + item.index"
+                     :avatar="item.avatar"
+                     :type="item.type"
                      :nickname="item.nickname"
                      :content="item.content"
-                     :type="item.type"
                      :is-continuous="item.isContinuous"
                      :picture="item.picture"
-                     :is-mount="item.index > mountedItemCount - 15"
+                     :is-mount="item.index > mountedChattingItemNum - MAX_MOUNTED_CHATTING_ITEM_NUM"
                      @mounted="discussMessageExecEnd(item.index)"
       />
     </div>
@@ -23,14 +24,13 @@
       <display ref="pic-status" class="display-status"/>
       <role-dialog class="role-dialog"
                    v-show="nowStoryMassage.id"
-                   :voiceId="nowStoryMassage.voiceId"
                    :type="nowStoryMassage.type"
-                   :name="nowStoryMassage.name"
+                   :role="nowStoryMassage.role"
+                   :face="nowStoryMassage.face"
+                   :voiceId="nowStoryMassage.voiceId"
                    :content="nowStoryMassage.content"
                    :dice="nowStoryMassage.dice"
-                   :role="nowStoryMassage.role"
-                   :next-role="nextStoryMassage.role"
-                   chapter="6"
+                   :chapter="CHAPTER"
                    @playFinish="storyMessageExecEnd"
       />
     </div>
@@ -39,13 +39,30 @@
 </template>
 <script>
 import ChattingItem from '@/views/components/ChattingItem'
-import DiscussEvent from '@/assets/play/6-discuss-event.json'
-import StoryEvent from '@/assets/play/6-story-event.json'
-import DiscussPlay from '@/assets/play/6-discuss.json'
-import StoryPlay from '@/assets/play/6-story.json'
 import RoleDialog from '@/views/components/RoleDialog'
 import Display from '@/views/components/Display'
+import ProjectConfig from '@/config/ProjectConfig.json'
 import $ from 'jquery'
+
+// 指定剧本
+import DiscussPlay from '@/assets/play/6-discuss.json'
+import StoryPlay from '@/assets/play/6-story.json'
+// 指定剧本事件
+import DiscussEvent from '@/assets/play/6-discuss-event.json'
+import StoryEvent from '@/assets/play/6-story-event.json'
+
+const projectConfig = ProjectConfig
+// id 序号补全位数
+const ID_DIGITS = projectConfig.idDigits
+// 聊天消息窗口最大渲染消息数
+const MAX_MOUNTED_CHATTING_ITEM_NUM = 15
+// 故事章节，对应语音加载目录 src/assets/voice/CHAPTER
+const CHAPTER = '6'
+// 从第 x 项快速载入剧本，方便调试，推荐从同一 waiting 载入
+const STORY_START_INDEX = 2
+const DISCUSS_START_INDEX = 0
+// 初始场景
+const START_BACKGROUND = '医学楼走廊一楼.png'
 
 export default {
   name: 'Index',
@@ -56,12 +73,16 @@ export default {
   },
   data () {
     return {
+      CHAPTER,
+      MAX_MOUNTED_CHATTING_ITEM_NUM,
       started: false,
       curtainVisible: true,
       chattingItemList: [],
-      mountedItemCount: 0,
+      mountedChattingItemNum: 0,
       bgmPlayer: undefined,
       sePlayer: undefined,
+      // 幕布元素
+      curtainElement: undefined,
       // 讨论信息列表
       discussMsgList: DiscussPlay,
       // 故事信息列表
@@ -74,48 +95,63 @@ export default {
       nowDiscussMassage: undefined,
       nextStoryMassage: {},
       nowStoryMassage: {},
-      // 节点同步参数
-      waitingDiscuss: undefined,
-      waitingStory: undefined,
-      message: {
-        index: Number, // 序号
-        id: String, // 唯一id
-        waiting: Boolean // 同步id
-        // other
-      },
-      event: {
-        index: Number, // 序号
-        id: String, // 唯一id
-        triggerId: String // 触发id
-        // other
-      },
+      // 结束标记组
       finishFlag: {
         bgm: false,
         discuss: false,
         story: false
-      }
+      },
+      // 节点同步参数
+      waitingDiscuss: undefined,
+      waitingStory: undefined,
+      storyMassageClass: {
+        index: Number, // 序号
+        id: String, // 唯一id
+        waiting: String, // 阻塞同步id
+
+        type: String, // 消息类型 normal roll
+        role: String, // 角色
+        face: String, // 表情
+        content: String, // 内容
+        dice: Object // 骰子信息
+      },
+      discussMassageClass: {
+        index: Number, // 序号
+        id: String, // 唯一id
+        waiting: String, // 阻塞同步id
+
+        type: String, // 消息类型 normal info
+        avatar: String, // 头像文件
+        nickname: String, // 昵称
+        content: String, // 内容
+        picture: String, // 消息图片
+        isContinuous: Boolean, // 是否与上一人相同
+        delay: Number, // 阅读延迟
+        preDelay: Number // 载入延迟
+      },
+      eventItemClass: {
+        preDelay: Number, // 载入延迟
+        type: String, // 事件类型
+        param: Object // 事件参数
+      },
+      // 计时器
+      startTime: undefined
     }
   },
   computed: {
+    // 标记：故事节点与讨论节点均加载完毕，剧本结束
     isFinished () {
       return this.finishFlag.discuss && this.finishFlag.story
     },
+    // 标记：故事节点与讨论节点是否均到达等待节点
     allWaiting () {
       return this.waitingDiscuss && this.waitingStory
-    },
-    currentChattingItemList () {
-      const length = this.chattingItemList.length
-      if (length <= 10) {
-        return this.chattingItemList
-      } else {
-        return this.chattingItemList.slice(length - 10)
-      }
     }
   },
   mounted () {
-    this.eventBackground('black.png')
-    const curtainElement = document.getElementById('curtain')
-    curtainElement.style.opacity = '1'
+    this.eventBackground(START_BACKGROUND)
+    this.curtainElement = document.getElementById('curtain')
+    this.curtainElement.style.opacity = '1'
     this.bgmPlayer = document.getElementById('bgm')
     this.bgmPlayer.loop = false
     this.sePlayer = document.getElementById('se')
@@ -125,6 +161,7 @@ export default {
     allWaiting (val) {
       // 消息节点同步
       if (val) {
+        this.timeLog('同步等待', `discuss waiting: ${this.nextDiscussMassage.waiting}, discuss waiting: ${this.nextStoryMassage.waiting}`)
         this.discussMessageExec(this.nextDiscussMassage)
         this.storyMessageExec(this.nextStoryMassage)
         this.waitingStory = undefined
@@ -146,10 +183,16 @@ export default {
     }
   },
   methods: {
+    /**
+     * 鼠标点击开始
+     **/
     start () {
       if (this.started) {
         return
       }
+
+      this.startTime = new Date().getTime()
+      console.log('计时开始: 00:00.000')
 
       this.theOpening()
       this.started = true
@@ -159,10 +202,10 @@ export default {
         story: false
       }
       setTimeout(() => {
-        this.storyMessageLoad(2)
+        this.storyMessageLoad(STORY_START_INDEX)
       }, 3000)
       setTimeout(() => {
-        this.discussMessageLoad(0)
+        this.discussMessageLoad(DISCUSS_START_INDEX)
         this.curtainVisible = false
       }, 3000)
     },
@@ -171,18 +214,16 @@ export default {
      **/
     theOpening () {
       this.curtainVisible = true
-      const curtainElement = document.getElementById('curtain')
-      curtainElement.style.opacity = '0'
+      this.curtainElement.style.opacity = '0'
     },
     /**
      * 闭幕
      **/
     theConcluding () {
-      this.eventBgmOut()
       this.curtainVisible = true
       setTimeout(() => {
-        const curtainElement = document.getElementById('curtain')
-        curtainElement.style.opacity = '1'
+        this.curtainElement.style.opacity = '1'
+        this.eventBgmOut()
       }, 1000)
       setTimeout(() => {
         const mainElement = document.getElementById('main')
@@ -191,13 +232,13 @@ export default {
         this.started = false
       }, 3000)
       setTimeout(() => {
-        const curtainElement = document.getElementById('curtain')
-        curtainElement.style.transition = 'opacity 4s linear'
-        curtainElement.style.opacity = '0'
+        this.curtainElement.style.transition = 'opacity 4s linear'
+        this.curtainElement.style.opacity = '0'
       }, 3500)
     },
     /**
      * 讨论消息加载
+     * @param index 讨论节点序号
      **/
     discussMessageLoad (index) {
       // 加载消息列表
@@ -221,15 +262,21 @@ export default {
     },
     /**
      * 讨论消息执行
+     * @param message 讨论节点 discussMassageClass
      **/
     discussMessageExec (message) {
-      // 更新当前讨论节点id
-      this.nowDiscussMassage = message
-      // 新增讨论项
-      this.chattingItemList.push(message)
+      // 延迟加载
+      const { preDelay } = message
+      setTimeout(() => {
+        this.timeLog('讨论节点', message.content)
+        // 更新当前讨论节点id
+        this.nowDiscussMassage = message
+        // 新增讨论项
+        this.chattingItemList.push(message)
+      }, preDelay || 0)
     },
     /**
-     * 讨论消息执行完毕
+     * 讨论消息执行完毕执行的操作
      **/
     discussMessageExecEnd () {
       // 滚动聊天栏到底部
@@ -237,23 +284,25 @@ export default {
       theLastItem.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
       // 阅读等待
       setTimeout(() => {
-        this.mountedItemCount++
+        this.mountedChattingItemNum++
         this.discussMessageLoad(this.nowDiscussMassage.index + 1)
       }, this.nowDiscussMassage.delay)
     },
     /**
      * 讨论事件加载
+     * @param id 讨论id
      **/
     discussEventLoad (id) {
       const eventList = this.discussEventMap[id]
       if (eventList) {
         eventList.forEach((event) => {
-          setTimeout(() => this.eventExec(event))
+          setTimeout(() => this.eventExec(event, id))
         })
       }
     },
     /**
      * 故事消息加载
+     * @param index 故事序号
      **/
     storyMessageLoad (index) {
       // 加载消息列表
@@ -269,10 +318,7 @@ export default {
       this.nextStoryMassage = this.storyMsgList[index]
 
       // 生产声音文件名
-      function prefixZero (num, n) {
-        return (Array(n).join(0) + num).slice(-n)
-      }
-      this.nextStoryMassage.voiceId = prefixZero(index, 3) + '-' + this.nextStoryMassage.id
+      this.nextStoryMassage.voiceId = this.prefixZero(index, ID_DIGITS) + '-' + this.nextStoryMassage.id
 
       if (this.nextStoryMassage.waiting) {
         // 设置等待故事id
@@ -284,9 +330,11 @@ export default {
     },
     /**
      * 故事消息执行
+     * @param message 故事节点 storyMassageClass
      **/
     storyMessageExec (message) {
       // 更新当前故事节点id
+      this.timeLog('故事节点', message.content || 'roll')
       this.nowStoryMassage = message
       this.finishFlag.storyPlay = false
     },
@@ -301,56 +349,65 @@ export default {
     },
     /**
      * 故事事件加载
+     * @param id 故事id
      **/
     storyEventLoad (id) {
       const eventList = this.storyEventMap[id]
       if (eventList) {
         eventList.forEach((event) => {
-          setTimeout(() => this.eventExec(event))
+          setTimeout(() => this.eventExec(event, id))
         })
       }
     },
     /**
      * 事件执行
+     * @param eventItem 事件项信息 eventItemClass
+     * @param id 讨论/故事节点id
      **/
-    eventExec (event) {
-      console.log(event.type, event.param)
-      // 执行事件
-      switch (event.type) {
-        case 'bg':
-          this.eventBackground(event.param)
-          break
-        case 'bgm-list':
-          this.eventBgmList(event.param)
-          break
-        case 'bgm':
-          this.eventBgm(event.param)
-          break
-        case 'bgm-out':
-          this.eventBgmOut()
-          break
-        case 'se':
-          this.eventSE(event.param)
-          break
-        case 'pic':
-          this.eventPicture(event.param)
-          break
-        case 'pic-disappear':
-          this.eventPictureDisappear()
-          break
-        case 'pic-side':
-          this.eventPictureSide(event.param)
-          break
-        case 'pic-side-disappear':
-          this.eventPictureSideDisappear()
-          break
-        case 'pic-status':
-          this.eventPictureStatus(event.param)
-          break
-        case 'pic-status-disappear':
-          this.eventPictureStatusDisappear()
-          break
-      }
+    eventExec (eventItem, id) {
+      // 延迟加载
+      const { preDelay } = eventItem
+      setTimeout(() => {
+        this.timeLog('触发事件', eventItem.type + ' ' + id)
+        switch (eventItem.type) {
+          case 'bg':
+            this.eventBackground(eventItem.param)
+            break
+          case 'bgm-list':
+            this.eventBgmList(eventItem.param)
+            break
+          case 'bgm':
+            this.eventBgm(eventItem.param)
+            break
+          case 'bgm-out':
+            this.eventBgmOut()
+            break
+          case 'se':
+            this.eventSE(eventItem.param)
+            break
+          case 'pic':
+            this.eventPicture(eventItem.param)
+            break
+          case 'pic-disappear':
+            this.eventPictureDisappear()
+            break
+          case 'pic-side':
+            this.eventPictureSide(eventItem.param)
+            break
+          case 'pic-side-disappear':
+            this.eventPictureSideDisappear()
+            break
+          case 'pic-status':
+            this.eventPictureStatus(eventItem.param)
+            break
+          case 'pic-status-disappear':
+            this.eventPictureStatusDisappear()
+            break
+          case 'revoke':
+            this.eventRevoke(eventItem.param)
+            break
+        }
+      }, preDelay || 0)
     },
     /**
      * 事件列表
@@ -363,10 +420,10 @@ export default {
       const mainDiv = document.getElementById('main')
       const img = new Image()
       const src = require('@/assets/background/' + imagePath)
-      img.src = src
       img.onload = () => {
         mainDiv.style.backgroundImage = 'url(' + src + ')'
       }
+      img.src = src
     },
     /**
      * 展示图片
@@ -454,7 +511,37 @@ export default {
       }
 
       this.bgmPlayer.addEventListener('ended', interval)
-      playBgm(0)
+      playBgm()
+    },
+    /**
+     * 撤回讨论消息
+     * @param discussIndex 讨论消息序号
+     **/
+    eventRevoke (discussIndex) {
+      const vueComponents = this.$refs['chatting-item-' + discussIndex]
+      if (vueComponents.length) {
+        vueComponents[0].revoke()
+      }
+    },
+    /**
+     * 补零
+     * @param num 数字
+     * @param n 位数
+     **/
+    prefixZero (num, n) {
+      return (Array(n).join('0') + num).slice(-n)
+    },
+    /**
+     * 日志记录
+     * @param type 类型（推荐8个半角字符）
+     * @param content 内容
+     **/
+    timeLog (type, content) {
+      const diff = new Date().getTime() - this.startTime
+      const milliseconds = this.prefixZero(diff % 1000, 3)
+      const seconds = this.prefixZero(((diff / 1000) % 60).toFixed(0), 2)
+      const minutes = this.prefixZero(((diff / 1000) / 60).toFixed(0), 2)
+      console.log(`${type}: ${minutes}:${seconds}.${milliseconds}: ${content}`)
     }
   }
 }

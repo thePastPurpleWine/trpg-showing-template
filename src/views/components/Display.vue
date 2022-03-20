@@ -8,17 +8,24 @@ export default {
   data () {
     return {
       opacity: '0',
-      backgroundImage: 'unset'
+      backgroundImage: 'unset',
+      timeoutId: undefined,
+      picture: {
+        filepath: String,
+        waiting: Boolean,
+        duration: Number
+      }
     }
   },
   methods: {
     showImage (picture) {
-      console.log('showImage')
       if (!picture || !picture.filepath) {
         return
       }
 
-      console.log('showImage start')
+      clearTimeout(this.timeoutId)
+      this.timeoutId = undefined
+
       const src = require('@/assets/picture/' + picture.filepath)
       const img = new Image()
       img.src = src
@@ -27,8 +34,9 @@ export default {
         this.backgroundImage = 'url(' + src + ')'
       }
 
+      // 等待标记代表不主动消失
       if (!picture.waiting) {
-        setTimeout(() => {
+        this.timeoutId = setTimeout(() => {
           this.hideImage()
         }, picture.duration)
       }

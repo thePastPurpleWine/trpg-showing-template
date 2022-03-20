@@ -1,28 +1,24 @@
 <template>
   <div>
     <audio id="dialogVoice"></audio>
-    <role-image class="role-image" :role="role" :next-role="nextRole" @loaded="roleImageReady = true"/>
+<!--    角色图片-->
+    <role-image class="role-image" :roleImageSrc="roleImageSrc" @loaded="roleImageReady = true"/>
     <div class="dialog-block">
-      <img class="dialog-image" v-show="!isKP" :src="dialogNormal" alt="" @load="dialogImageReady = true">
-      <img class="dialog-image" v-show="isKP" :src="dialogSystem" alt="" @load="dialogImageReady = true">
+<!--    对话框背景图片-->
+      <img class="dialog-image" :src="dialogNormalSrc" alt="" @load="dialogImageReady = true">
 
-      <div class="dialog-content-block" v-if="isKP" v-show="roleImageReady && dialogImageReady">
+      <div class="dialog-content-block" v-show="roleImageReady && dialogImageReady">
+        <div class="name">
+          <span>{{ roleData.name }}</span>
+        </div>
+<!--        掷骰文本-->
         <div class="content-normal content-kp content-roll" v-if="isRoll">
           <span>{{ currentContent }}</span>
           <span id="diceSuffixText" :style="{ 'opacity': diceResultOpacity, 'color': '#dd0000' }">{{ diceSuffix }}</span>
         </div>
-
-        <div class="content-normal content-kp" v-else>
-          <span :style="{ 'color': roleConfig.color }">{{ currentContent }}</span>
-        </div>
-      </div>
-
-      <div class="dialog-content-block" v-else v-show="roleImageReady && dialogImageReady">
-        <div class="name">
-          <span v-show="!isKP">{{ name }}</span>
-        </div>
-        <div class="content-normal">
-          <span :style="{ 'color': roleConfig.color }">{{ currentContent }}</span>
+<!--        一般文本-->
+        <div class="content-normal" v-else>
+          <span :style="{ 'color': roleData.color }">{{ currentContent }}</span>
         </div>
       </div>
     </div>
@@ -31,7 +27,13 @@
 
 <script>
 import RoleImage from '@/views/components/RoleImage'
-import RoleConfig from '@/assets/play/RoleConfig.json'
+import RoleConfig from '@/config/RoleConfig.json'
+import ProjectConfig from '@/config/ProjectConfig.json'
+
+const roleConfig = RoleConfig
+const projectConfig = ProjectConfig
+const GREAT_SUCCESS = ProjectConfig.dice.greatSuccessValue
+const GREAT_FAIL = ProjectConfig.dice.greatFailValue
 
 export default {
   name: 'RoleDialog',
@@ -49,10 +51,6 @@ export default {
         return ['roll', 'kp', 'normal', undefined].includes(val)
       }
     },
-    name: {
-      type: String,
-      required: false
-    },
     content: {
       type: String,
       required: false
@@ -67,7 +65,7 @@ export default {
     role: {
       type: String
     },
-    nextRole: {
+    face: {
       type: String
     },
     delay: {
@@ -76,36 +74,65 @@ export default {
   },
   data () {
     return {
-      dialogNormal: require('@/assets/system/对话框.png'),
-      dialogSystem: require('@/assets/system/对话框-系统.png'),
+      // 对话框样式图片
+      dialogNormalSrc: undefined,
+      // dialogSystem: require('@/assets/system/对话框-系统.png'),
+      // 骰子音效
+      diceAudio: {
+        rollSrc: undefined,
+        resultNormalSrc: undefined,
+        resultGreatSuccessSrc: undefined,
+        resultSuccessSrc: undefined,
+        resultFailSrc: undefined,
+        resultGreatFailSrc: undefined
+      },
       currentContent: '',
       diceSuffix: '',
       audio: undefined,
       dialogImageReady: false,
       roleImageReady: false,
-      roleConfigMap: RoleConfig,
-      diceAudioSrc: {
-        roll: require('@/assets/se/dice.ogg'),
-        resultNormal: require('@/assets/se/dice-normal.ogg'),
-        resultGreatSuccess: require('@/assets/se/dice-great.ogg'),
-        resultSuccess: require('@/assets/se/dice-normal.ogg'),
-        resultFail: require('@/assets/se/dice-fail.ogg'),
-        resultGreatFail: require('@/assets/se/dice-fail.ogg'),
-        resultUnknown: require('@/assets/se/dice-unknown.ogg')
-      },
       diceResultOpacity: '0',
       typeStatus: {
+        // 文本打印准备
         ready: false,
+        // 文本打印中
         typing: false,
+        // 文本打印结束
         typeEnd: false,
-
+        // 文本语音播放中
         playing: false,
+        // 文本语音播放结束
         playEnd: false
       },
       rollStatus: {
+        // 掷骰准备
         ready: false,
+        // 掷骰演出中
         rolling: false,
+        // 掷骰演出结束
         end: false
+      },
+      roleClass: {
+        // 角色名称
+        name: String,
+        // 角色文本颜色
+        color: String,
+        // 角色语音音量
+        volume: Number,
+        // 角色立绘所在目录
+        roleDir: String
+      },
+      diceClass: {
+        // 骰子数量
+        num: Number,
+        // 骰子最大值
+        max: Number,
+        // 项目检定值
+        check: Number,
+        // 检定项目
+        project: String,
+        // 骰子值
+        value: Number
       }
     }
   },
@@ -119,15 +146,19 @@ export default {
     playFinish () {
       return this.typeStatus.playEnd && this.typeStatus.typeEnd && this.rollStatus.end
     },
-    roleConfig () {
-      if (this.roleConfigMap[this.name] === undefined) {
-        return this.roleConfigMap.default
-      } else {
-        return this.roleConfigMap[this.name]
-      }
+    roleData () {
+      // roleClass
+      return roleConfig[this.role] || {}
     },
     contentReady () {
       return this.roleImageReady && this.dialogImageReady && (this.rollStatus.ready || this.typeStatus.ready)
+    },
+    roleImageSrc () {
+      try {
+        return require('@/assets/role/' + this.roleData.roleDir + '/' + this.face + '.png')
+      } catch (e) {
+        return ''
+      }
     }
   },
   watch: {
@@ -142,7 +173,6 @@ export default {
     },
     content (val) {
       if (val && !this.isRoll) {
-        console.log('contentChange', val)
         this.typeStatus.ready = true
         this.rollStatus.end = true
       }
@@ -161,7 +191,19 @@ export default {
     },
     role () {
       this.roleImageReady = false
+    },
+    face () {
+      this.roleImageReady = false
     }
+  },
+  created () {
+    this.dialogNormalSrc = require('@/assets/system/' + projectConfig.dialogNormalImage)
+    this.diceAudio.rollSrc = require('@/assets/se/' + projectConfig.dice.rollSe)
+    this.diceAudio.resultNormalSrc = require('@/assets/se/' + projectConfig.dice.resultNormalSe)
+    this.diceAudio.resultFailSrc = require('@/assets/se/' + projectConfig.dice.resultFailSe)
+    this.diceAudio.resultSuccessSrc = require('@/assets/se/' + projectConfig.dice.resultSuccessSe)
+    this.diceAudio.resultGreatFailSrc = require('@/assets/se/' + projectConfig.dice.resultGreatFailSe)
+    this.diceAudio.resultGreatSuccessSrc = require('@/assets/se/' + projectConfig.dice.resultGreatSuccessSe)
   },
   mounted () {
     this.audio = document.getElementById('dialogVoice')
@@ -199,36 +241,43 @@ export default {
       this.currentContent = ''
       this.diceSuffix = ''
 
-      const dice = this.dice
-      const unknown = !dice.check || dice.value === 0
-      // 1D??? 时，1不显示
+      const dice = this.dice // diceClass
+      const isNormal = !dice.check || dice.value === 0
+      // nDX，n为1时，1不显示
       if (dice.num === 1) {
         dice.num = ''
       }
 
+      // 检定类掷骰结果音效
       let result = ''
       let seSrc = ''
-      if (dice.value >= 95) {
+      if (dice.value >= GREAT_SUCCESS) {
         result = '（大失败）'
-        seSrc = this.diceAudioSrc.resultGreatFail
+        seSrc = this.diceAudio.resultGreatFailSrc
       } else if (dice.value > dice.check) {
         result = '（失败）'
-        seSrc = this.diceAudioSrc.resultFail
-      } else if (dice.value <= 5) {
+        seSrc = this.diceAudio.resultFailSrc
+      } else if (dice.value <= GREAT_FAIL) {
         result = '（大成功）'
-        seSrc = this.diceAudioSrc.resultGreatSuccess
+        seSrc = this.diceAudio.resultGreatSuccessSrc
       } else if (dice.value <= dice.check) {
         result = '（成功）'
-        seSrc = this.diceAudioSrc.resultSuccess
+        seSrc = this.diceAudio.resultSuccessSrc
       }
 
-      if (unknown) {
+      // 一般数值类掷骰结果音效
+      if (isNormal) {
         result = ''
-        seSrc = this.diceAudioSrc.resultUnknown
+        seSrc = this.diceAudio.resultNormalSrc
       }
 
+      // 0代表暗骰
       if (dice.max === 0) {
         dice.max = '??'
+      }
+
+      if (dice.value === 0) {
+        dice.value = '??'
       }
 
       let check
@@ -236,10 +285,6 @@ export default {
         check = ''
       } else {
         check = `(${dice.check})`
-      }
-
-      if (dice.value === 0) {
-        dice.value = '??'
       }
 
       this.currentContent = `${dice.project} : ${dice.num}D${dice.max}${check} = `
@@ -260,7 +305,7 @@ export default {
       }
 
       this.audio.addEventListener('ended', playDiceResult)
-      this.audio.src = this.diceAudioSrc.roll
+      this.audio.src = this.diceAudio.rollSrc
       this.audio.play()
     },
     playAudio () {
@@ -277,7 +322,7 @@ export default {
       } else {
         this.audio.addEventListener('ended', voiceEnd)
         this.audio.src = audioSrc
-        this.audio.volume = this.roleConfig.volume
+        this.audio.volume = this.roleData.volume
         try {
           this.audio.play()
           this.typeStatus.playing = true
@@ -326,7 +371,6 @@ export default {
   font-size: 56px;
   color: black;
   font-weight: bolder;
-  /*傻逼字体只适配常用字*/
   font-family: '萝莉体', serif;
 }
 
@@ -336,7 +380,7 @@ export default {
 }
 
 .content-kp {
-  margin-top: 64px;
+  margin-top: 24px;
 }
 
 .content-roll {
